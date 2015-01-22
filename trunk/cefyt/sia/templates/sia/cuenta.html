@@ -1,0 +1,22 @@
+{% if autenticado %}
+	si
+	<br>
+	Mostrar la lista de cursos disponibles y un botón inscribirse.
+	<br>
+	USER:
+	<br>
+	{{usuario}}
+	<br>
+	Mostrar la lista de los cursos en los que estás inscriptos.
+	<br>
+{% else %}
+	ERROR DE USUARIO Y/O CONTRASEÑA, INTENTE NUEVAMENTE.
+	<script>
+  		window.setTimeout(function(){
+    		window.location.href = "../";
+  		}, 4000);
+	</script>
+	<br>
+{% endif %}
+
+<br>

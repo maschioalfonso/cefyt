@@ -1,0 +1,69 @@
+<style>
+body {
+    background-color: #5A677A;
+}
+
+    #title {
+        font-family: "Lucida Grande", sans-serif;
+        color: #FFFFFF;
+        text-align: center
+    }
+
+    #container {
+        background: #ACB3BC;
+        border-radius: 5px;
+        border: 1px solid #252A31;
+        width: 300px;
+        min-width: 300px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 1px;
+    }
+
+    .input {
+        border: 1px solid #39383d;
+        background: #DFDEE0;
+           -moz-border-radius: 3px; /* Firefox */
+        -webkit-border-radius: 3px; /* Safari, Chrome */
+         -khtml-border-radius: 3px; /* KHTML */
+    }
+
+
+</style>
+
+<body>
+<h1 id="title">Registro de usuarios</h1>
+
+<div id="container">
+<table>
+<form action="{% url 'sia:crear_registro' %}" method="post">
+    {% csrf_token %}
+    
+    <tr><td>Apellido:</td><td><input type="text" name="apellido" class="input"></td></tr>
+    <tr><td>Nombres:</td><td><input type="text" name="nombres" class="input"></td></tr>
+    <tr><td>Documento:</td><td><input type="text" name="documento" class="input"></td></tr>
+    <tr><td>Fecha de nacimiento:</td><td><input type="date" name="fecha_de_nacimiento" class="input"></td></tr>
+    
+    <tr><td>País natal:</td></tr>
+    {% for pais in paises %}
+    <tr>
+        <td><input type="radio" name="pais" id="pais" value="{{ pais.id }}" />
+            <label for="pais" name="pais"/>{{ pais.nombre }} </label>
+        </td>
+    </tr>
+    {% endfor %}
+
+    <tr><td>Provincia:</td><td><input type="text" name="provincia" class="input"></td></tr>
+    <tr><td>Localidad:</td><td><input type="text" name="localidad" class="input"></td></tr>
+    <tr><td>Domicilio</td><td><input type="text" name="domicilio" class="input">     </td></tr>
+    <tr><td>Teléfono</td><td><input type="text" name="telefono" class="input">     </td></tr>
+    <tr><td>Teléfono Alternativo</td><td><input type="text" name="telefono_alter" class="input">     </td></tr>
+    <tr><td>Email</td><td><input type="text" name="email" class="input" required>     </td></tr>
+    <tr><td>Contraseña:</td><td><input type="password" name="pwd" class="input" required>    </td></tr>
+    <tr><td></td><td><input type="submit" value="Registrarse" class="input"></td></tr>
+    
+</form>
+</table>
+</div>
+
+</body>

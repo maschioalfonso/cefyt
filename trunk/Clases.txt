@@ -1,0 +1,102 @@
+Alumno
+------
+
++ Apellido
++ Nombres
++ Documento: string (por si se utiliza pasaporte, por ej. AAA23785)
++ Edad
++ Domicilio
++ Localidad
++ Provincia
++ País (Lista de opciones)
++ Código postal
++ Teléfono			
++ Teléfono alternativo
++ Correo electrónico
+
+(*) La longitud y tipo de los datos es correcta?
+(*) Teléfono tipo String? Para permitir por ej: (0351) 48998754 ó +54 351-2798685
+(*) El país debe ser una lista parametrizable,
+	- Que pasa si es un campo obligatorio y se elimina un pais ¿Se borran todos los alumnos?
+	- No ponerlo como obligatorio en la BD sino como control cuando se llene el formulario.
+	- Si se borran un país, se borran todos los alumnos de ese país.
+
+
+Materia
+-------
+
++ nombre
+
+(*) El nombre de un curso deberá ser único.
+
+
+Curso
+-----
+
++ nombre
++ materias
++ descripcion
+
+(*) materias deben estar en Materia.
+(*) Ponemos campo descripción?
+
+
+Cursado
+-------
+
++ nombre
++ curso
++ alumno
++ duracion
++ costo_total_pesos
++ costo_total_dolares
++ costo_inscripcion_pesos
++ costo_inscripcion_dolares
++ inscripcion_abierta
+
+
+(*) Qué pasa si el usuario agrega un alumno por el sistema y luego
+éste mismo alumno quiere registrarse?
+
+(*) Que pasa si un alumno se registra, se inscribe a un curso y luego cambia
+    el apellido y nombre? En cursado debería utilizarse usuario para registrarse.
+
+(*) El mail debe ser clave primaria.
+Si usamos un nombre de usuario se los van a olvidar.
+
+
+Cuota
+-----
+
++ alumno
++ cursado
++ cuota_n
++ pagado
++ fecha_de_pago
++ comprobante_de_pago
+
+
+¿Preguntas?
+-----------
+
+(o) Ustedes tienen acceso a la contraseña de los usuarios?.
+(o) Necesitan la contraseña de los usuarios?.
+(o) El usuario debería tener mail si o si para registrarse.
+(o) El usuario no podrá cambiar el mail.
+(o) Mostrar la propuesta de carga de cuotas.
+
+
+(o) Se quita el campo edad y se agrega el campo fecha de nacimiento.
+(o) El campo país, se refiere al país de nacimiento o donde se encuentra ahora?
+
+
+Definición de vistas
+---------- -- ------
+
+1 - Página principal
+    Dos textbox: Usuario y Contraseña        
+    Un botón de 'Iniciar sesión'
+    Un botón de 'Registrarse'
+
+    1.1 - Registrarse
+    1.2 - Iniciar sesión

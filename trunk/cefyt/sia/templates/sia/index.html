@@ -1,0 +1,66 @@
+<style>
+	#title {
+	    font-family: "Lucida Grande", sans-serif;
+	    color: #FFFFFF;
+	    text-align: center
+	}
+
+	#box_title {
+	    font-family: "Lucida Grande", sans-serif;
+	    color: #FFFFFF;
+	    text-align: center;
+	    margin: 8;
+	}
+
+	#background {
+    	background-color: #5A677A;
+	}
+
+	#container {
+	    background: #ACB3BC;
+		border-radius: 5px;
+	    border: 1px solid #252A31;
+	    width: 300px;
+	    min-width: 300px;
+	    margin-left: auto;
+	    margin-right: auto;
+	    padding: 1px;
+	}
+
+	#branding{
+		background-color:#2A323F; 
+		padding:1px; 
+		margin:0px; 
+		border-radius: 5px;
+	}
+
+	.input {
+	    border: 1px solid #39383d;
+	    background: #DFDEE0;
+		   -moz-border-radius: 3px; /* Firefox */
+		-webkit-border-radius: 3px; /* Safari, Chrome */
+		 -khtml-border-radius: 3px; /* KHTML */
+	}
+</style>
+
+<body id="background">
+<h1 id="title">CEFyT - Centro de Estudios Filosóficos y Teológicos</h1>
+
+
+<div id="container">
+	<div id="branding">
+		<h2 id="box_title">
+			Inscripción
+		</h2>
+	</div>
+
+<table>
+	<form action="{% url 'sia:cuenta' %}" method="post">
+		{% csrf_token %}
+		{{ form }}
+		<td><input type="submit" value="Iniciar sesión" class="input"></td>
+		<td><a href="http://127.0.0.1:8000/sia/registro/">Registrarse</a></td>
+	</form>
+</table>
+</div>
+</body>
