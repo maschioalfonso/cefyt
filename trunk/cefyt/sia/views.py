@@ -2,16 +2,18 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from sia.models import Pais, Alumno
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
-from sia.forms import UsuarioForm
+from django.contrib.auth import authenticate, login
+from sia.forms import UsuarioForm, RegistroForm
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 
 
-#@login_required(redirect_field_name='my_redirect_field')
+@login_required
 def index(request):
-    context = {'form': UsuarioForm}
+
+    context = {
+               'mensaje': 'hola_mundo'}
     return render(request, 'sia/index.html', context)
-
-
 
 # def login(request):
 #   form = myform
@@ -30,37 +32,57 @@ def index(request):
 
 #   context = {'form' = form}
 #   return render(request, 'mytemplate.html', context)
-
-
-
-
-
-
+@login_required
 def cuenta(request):
     import ipdb; ipdb.set_trace()
-    nombre_usuario = request.POST.get('username')
-    contrasenia = request.POST.get('password')
-    if (nombre_usuario == None) or (contrasenia == None):
-        return HttpResponseRedirect('/sia')
-
-    import ipdb; ipdb.set_trace()
-    usuario = authenticate(username=nombre_usuario, password=contrasenia)
-    if usuario.is_authenticated():
-      autenticado = True
-    else:
-      autenticado = False
-      return HttpResponseRedirect('/sia')
-
-
-    context = {
-      'autenticado' : autenticado,
-      'usuario' : usuario,
+    objects = User.objects.all()
+    context = {'titulo': "Informacion de la cuenta",
+               'object_list': objects
     }
     return render(request, 'sia/cuenta.html', context)
 
 def registro(request):
-    paises = Pais.objects.all()
-    context = {'paises' : paises}
+    form = RegistroForm()
+
+    if request.method == "GET":
+        form = RegistroForm(request.GET)
+
+    elif request.method == "POST":
+        form = RegistroForm(request.POST)
+        if form.is_valid():
+
+          
+
+            usuario,creado = User.objects.get_or_create(
+                username=request.POST.get('email'),
+                first_name=form.cleaned_data.get('nombre'),
+                last_name=form.cleaned_data.get('apellido'),
+                )
+            #(object, created)
+            if not creado:
+                pass
+                #exploted
+            else:
+                usuario.set_password(request.POST.get('password'))
+                usuario.save()
+                alumno = Alumno.objects.create(
+                    usuario = usuario,
+                    pais = form.cleaned_data.get('pais'),
+                    fecha_de_nacimiento = form.cleaned_data.get('fecha_de_nacimiento'),
+                    provincia = form.cleaned_data.get('provincia'),
+                    localidad = form.cleaned_data.get('localidad'),
+                    domicilio = form.cleaned_data.get('domicilio'),
+                    telefono = form.cleaned_data.get('telefono'),
+                    telefono_alter = form.cleaned_data.get('telefono_alter')
+                )
+                usuario = authenticate(username=usuario.username, password=request.POST.get('password'))
+                login(request, usuario)
+                import ipdb; ipdb.set_trace()
+                return redirect("sia:cuenta")
+
+
+    context = {'form': form}
+
     return render(request, 'sia/registro.html', context)
 
 def cursos_dusponible(request):
