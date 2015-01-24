@@ -6,6 +6,9 @@
 <form method="POST", action>
 {% csrf_token %}
     <br>
+    {% if not lista_cursados %}
+        <tr><td><p style="color:blue">No hay cursos con inscripciones abiertas.</p></td></tr>        
+    {% endif %}
     <table>
     	{% for curso in lista_cursados %}
     		{% if curso.inscripcion_abierta %}
@@ -13,6 +16,6 @@
             {% endif %}
     	{% endfor %}
     </table>
-    <tr><td><input type="submit" value="Registrarse" class="input"></td></tr>
+    <tr><td><input type="submit" value="Inscribirse" class="input"></td></tr>
 </div>
 {% endblock %}

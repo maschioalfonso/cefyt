@@ -32,20 +32,22 @@ def index(request):
 
 #   context = {'form' = form}
 #   return render(request, 'mytemplate.html', context)
+
 @login_required
 def cuenta(request):
-    #import ipdb; ipdb.set_trace()
     cursados = Cursado.objects.all()
     context = {'titulo': "Informacion de la cuenta",
                'lista_cursados': cursados
-    }
+              }
 
     if request.method == "POST":
-      # Inscribir el usuario: <request.user> al curso que tiene
-      # clave primaria: request.POST.get('curso')
-      pass
+      inscripcion = Cursado.objects.get(id=request.POST.get('curso'))
+      #usuario = User.objects.get(username=request.user.username)
+      alumno = Alumno.objects.get(usuario__username='marianitovlk@gmail.com')
+      inscripcion.alumno.add(alumno)
 
     return render(request, 'sia/cuenta.html', context)
+
 
 def registro(request):
     form = RegistroForm()
