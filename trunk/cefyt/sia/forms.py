@@ -20,10 +20,11 @@ class UsuarioForm(ModelForm):
 class RegistroForm(ModelForm):
     nombre = CharField()
     apellido = CharField()
-    email = EmailField()
-    password = CharField()
-    pais = ModelChoiceField(queryset=Pais.objects.all(), empty_label=None)
+    email = EmailField(label='e-mail')
+    password = CharField(label='Contraseña')
+    pais = ModelChoiceField(queryset=Pais.objects.all(), empty_label=None, label='País Natal')
 
+    
     class Meta:
         model = Alumno
         exclude = ['usuario']
@@ -38,4 +39,15 @@ class RegistroForm(ModelForm):
                   'telefono',
                   'telefono_alter',
                   'fecha_de_nacimiento',
-                ]
+                 ]
+
+        labels = {'nombre' : 'Nombre',
+                  'apellido' : 'Apellido',
+                  'documento' : 'Nro. de documento',
+                  'domicilio' : 'Domicilio',
+                  'provincia' : 'Provincia',
+                  'localidad' : 'Localidad',
+                  'telefono' : 'Teléfono',
+                  'telefono_alter' : 'Teléfono alternativo',
+                  'fecha_de_nacimiento' : 'Fecha de nacimiento',
+                 }

@@ -34,7 +34,7 @@ def index(request):
 #   return render(request, 'mytemplate.html', context)
 @login_required
 def cuenta(request):
-    import ipdb; ipdb.set_trace()
+    #import ipdb; ipdb.set_trace()
     objects = User.objects.all()
     context = {'titulo': "Informacion de la cuenta",
                'object_list': objects
@@ -44,6 +44,7 @@ def cuenta(request):
 def registro(request):
     form = RegistroForm()
 
+    UsuarioExistente = False
     if request.method == "GET":
         form = RegistroForm()
 
@@ -58,6 +59,7 @@ def registro(request):
                 )
             #(object, created)
             if not creado:
+                UsuarioExistente = True
                 pass
                 #exploted
             else:
@@ -76,11 +78,13 @@ def registro(request):
                 )
                 usuario = authenticate(username=usuario.username, password=request.POST.get('password'))
                 login(request, usuario)
-                import ipdb; ipdb.set_trace()
+                #import ipdb; ipdb.set_trace()
                 return redirect("sia:cuenta")
 
 
-    context = {'form': form}
+    context = {'form': form,
+               'UsuarioExistente' : UsuarioExistente,
+              }
 
     return render(request, 'sia/registro.html', context)
 
