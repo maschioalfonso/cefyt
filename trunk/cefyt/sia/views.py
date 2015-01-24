@@ -45,7 +45,7 @@ def registro(request):
     form = RegistroForm()
 
     if request.method == "GET":
-        form = RegistroForm(request.GET)
+        form = RegistroForm()
 
     elif request.method == "POST":
         form = RegistroForm(request.POST)
