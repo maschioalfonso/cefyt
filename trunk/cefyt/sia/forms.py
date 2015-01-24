@@ -27,4 +27,15 @@ class RegistroForm(ModelForm):
     class Meta:
         model = Alumno
         exclude = ['usuario']
-        #fields = ['nombre', 'apellido', 'email', 'pais']
+        fields = ['nombre',
+                  'apellido',
+                  'email',
+                  'documento',
+                  'domicilio',
+                  'pais',
+                  'provincia',
+                  'localidad',
+                  'telefono',
+                  'telefono_alter',
+                  'fecha_de_nacimiento',
+                ]

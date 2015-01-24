@@ -51,8 +51,6 @@ def registro(request):
         form = RegistroForm(request.POST)
         if form.is_valid():
 
-          
-
             usuario,creado = User.objects.get_or_create(
                 username=request.POST.get('email'),
                 first_name=form.cleaned_data.get('nombre'),
@@ -66,14 +64,15 @@ def registro(request):
                 usuario.set_password(request.POST.get('password'))
                 usuario.save()
                 alumno = Alumno.objects.create(
-                    usuario = usuario,
-                    pais = form.cleaned_data.get('pais'),
-                    fecha_de_nacimiento = form.cleaned_data.get('fecha_de_nacimiento'),
-                    provincia = form.cleaned_data.get('provincia'),
-                    localidad = form.cleaned_data.get('localidad'),
-                    domicilio = form.cleaned_data.get('domicilio'),
-                    telefono = form.cleaned_data.get('telefono'),
-                    telefono_alter = form.cleaned_data.get('telefono_alter')
+                    usuario=usuario,
+                    documento=form.cleaned_data.get('documento'),
+                    pais=form.cleaned_data.get('pais'),
+                    fecha_de_nacimiento=form.cleaned_data.get('fecha_de_nacimiento'),
+                    provincia=form.cleaned_data.get('provincia'),
+                    localidad=form.cleaned_data.get('localidad'),
+                    domicilio=form.cleaned_data.get('domicilio'),
+                    telefono=form.cleaned_data.get('telefono'),
+                    telefono_alter=form.cleaned_data.get('telefono_alter')
                 )
                 usuario = authenticate(username=usuario.username, password=request.POST.get('password'))
                 login(request, usuario)
