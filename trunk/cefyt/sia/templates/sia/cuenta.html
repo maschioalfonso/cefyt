@@ -1,11 +1,18 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
+{{ titulo }} <br>
+{{ user }}
 <div id="content-main">
-{{ titulo }} - {{ user }}
+<form method="POST", action>
+{% csrf_token %}
+    <br>
     <table>
-    	{% for cursadas in user.alumno.cursado_set.all %}
-    		<tr><input type="radio">{{ cursadas }}</input></tr>
+    	{% for curso in lista_cursados %}
+    		{% if curso.inscripcion_abierta %}
+            <tr><td><input type="radio" name="curso" value="{{ curso.id }}">{{ curso }}</input></td></tr>
+            {% endif %}
     	{% endfor %}
     </table>
+    <tr><td><input type="submit" value="Registrarse" class="input"></td></tr>
 </div>
 {% endblock %}

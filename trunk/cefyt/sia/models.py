@@ -42,7 +42,7 @@ class Curso(models.Model):
 
 
 class Cursado(models.Model):
-    nombre = models.CharField(max_length=MAX_LENGTH, primary_key=True)
+    nombre = models.CharField(max_length=MAX_LENGTH, unique=True)
     curso = models.ForeignKey(Curso)
     alumno = models.ManyToManyField(Alumno, blank=True, null=True)
     duracion = models.IntegerField(default=0) #Restringir de 1 a 12. CHOICES de 1 a 12 !

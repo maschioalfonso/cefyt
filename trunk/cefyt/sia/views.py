@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from sia.models import Pais, Alumno
+from sia.models import Pais, Alumno, Cursado
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from sia.forms import UsuarioForm, RegistroForm
@@ -35,16 +35,22 @@ def index(request):
 @login_required
 def cuenta(request):
     #import ipdb; ipdb.set_trace()
-    objects = User.objects.all()
+    cursados = Cursado.objects.all()
     context = {'titulo': "Informacion de la cuenta",
-               'object_list': objects
+               'lista_cursados': cursados
     }
+
+    if request.method == "POST":
+      # Inscribir el usuario: <request.user> al curso que tiene
+      # clave primaria: request.POST.get('curso')
+      pass
+
     return render(request, 'sia/cuenta.html', context)
 
 def registro(request):
     form = RegistroForm()
 
-    UsuarioExistente = False
+    usuario_existente = False
     if request.method == "GET":
         form = RegistroForm()
 
@@ -59,7 +65,7 @@ def registro(request):
                 )
             #(object, created)
             if not creado:
-                UsuarioExistente = True
+                usuario_existente = True
                 pass
                 #exploted
             else:
@@ -83,7 +89,7 @@ def registro(request):
 
 
     context = {'form': form,
-               'UsuarioExistente' : UsuarioExistente,
+               'usuario_existente' : usuario_existente,
               }
 
     return render(request, 'sia/registro.html', context)
