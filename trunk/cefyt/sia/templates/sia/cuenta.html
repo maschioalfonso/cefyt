@@ -1,11 +1,32 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
+{{ titulo }} <br>
+{{ user }}
 <div id="content-main">
-{{ titulo }} - {{ user }}
+<form method="POST", action>
+{% csrf_token %}
+    <br>
+    {% if not lista_cursados %}
+        <tr><td><p style="color:blue">No hay cursos con inscripciones abiertas.</p></td></tr>        
+    {% endif %}
     <table>
-    	{% for cursadas in user.alumno.cursado_set.all %}
-    		<tr><input type="radio">{{ cursadas }}</input></tr>
+    	{% for curso in lista_cursados %}
+    		{% if curso.inscripcion_abierta %}
+            <tr><td><input type="radio" name="curso" value="{{ curso.id }}">{{ curso }}</input></td></tr>
+            {% endif %}
     	{% endfor %}
     </table>
+    <br>
+    <br>
+    Cómo conociste el curso?
+    <br>
+    <br>
+    <table>
+    {% for opcion in opcion_descubrimento %}
+        <tr><td><input type="radio" name="descubrimiento" value="{{ opcion.id }}"> {{ opcion }}</td></tr>
+    {% endfor %}
+    </table>
+    <br>
+    <input type="submit" value="Inscribirse" class="input">
 </div>
 {% endblock %}

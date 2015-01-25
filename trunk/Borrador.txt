@@ -1,0 +1,3 @@
++ El campo 'fecha de nacimiento' de la página sia/registro es de la forma mm/dd/yyyy.
++ Un usuario registrado al intentar entrar a la página sia/registro debería ser redirigido a sia/cuenta
+  para que no pueda volver a registrarse.

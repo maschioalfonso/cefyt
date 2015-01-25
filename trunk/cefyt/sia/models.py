@@ -42,7 +42,7 @@ class Curso(models.Model):
 
 
 class Cursado(models.Model):
-    nombre = models.CharField(max_length=MAX_LENGTH, primary_key=True)
+    nombre = models.CharField(max_length=MAX_LENGTH, unique=True)
     curso = models.ForeignKey(Curso)
     alumno = models.ManyToManyField(Alumno, blank=True, null=True)
     duracion = models.IntegerField(default=0) #Restringir de 1 a 12. CHOICES de 1 a 12 !
@@ -57,7 +57,23 @@ class Cursado(models.Model):
 
     def __str__(self):              # __unicode__ on Python 2
         return self.nombre
-        
+
+
+class DescubrimientoOpcion(models.Model):
+    opcion = models.CharField(max_length=MAX_LENGTH)
+
+    def __str__(self):              # __unicode__ on Python 2
+        return self.opcion
+
+
+class DescubrimientoCurso(models.Model): 
+    cursada = models.ForeignKey(Cursado)
+    alumno = models.ForeignKey(Alumno)
+    opcion = models.ForeignKey(DescubrimientoOpcion)
+
+    def __str__(self):              # __unicode__ on Python 2
+        return self.alumno.usuario.username + ' - ' + self.cursada.nombre + '-> ' + self.opcion.opcion
+
 class Cuota(models.Model):
     alumno = models.ForeignKey(Alumno)
     cursado = models.ForeignKey(Cursado)
