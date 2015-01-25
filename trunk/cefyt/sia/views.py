@@ -5,9 +5,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
-from sia.models import Pais, Alumno, Cursado
-from sia.forms import UsuarioForm, RegistroForm
+from sia.models import Pais, Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso
+from sia.forms import RegistroForm
 
+# TO DO: Agregar cómo conoció el curso.
 
 @login_required
 def index(request):
@@ -20,15 +21,23 @@ def index(request):
 @login_required
 def cuenta(request):
     cursados = Cursado.objects.all()
+    opcion_descubrimento = DescubrimientoOpcion.objects.all()
     context = {'titulo': "Informacion de la cuenta",
-               'lista_cursados': cursados
+               'lista_cursados': cursados,
+               'opcion_descubrimento' : opcion_descubrimento
               }
 
     if request.method == "POST":
-        inscripcion = Cursado.objects.get(id=request.POST.get('curso'))
+        cursado = Cursado.objects.get(id=request.POST.get('curso'))
         #usuario = User.objects.get(username=request.user.username)
         alumno = Alumno.objects.get(usuario__username='marianitovlk@gmail.com')
-        inscripcion.alumno.add(alumno)
+        cursado.alumno.add(alumno)
+
+        opcion = DescubrimientoOpcion.objects.get(id=request.POST.get('descubrimiento'))
+        descubrimiento_curso = DescubrimientoCurso(cursada=cursado, 
+                                                   alumno=alumno, 
+                                                   opcion=opcion)
+        descubrimiento_curso.save()
 
     return render(request, 'sia/cuenta.html', context)
 

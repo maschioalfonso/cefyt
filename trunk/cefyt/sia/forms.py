@@ -1,20 +1,7 @@
-
-
 from django.forms import ModelForm, Form, EmailField, CharField, ModelChoiceField
 from django.contrib.auth.models import User
 
 from sia.models import Alumno, Pais
-
-
-# Create the form class.
-class UsuarioForm(ModelForm):
-
-#	def __init__():
-#		username = super(, help_text='')
-
-    class Meta:
-    	model = User
-    	#fields = ['username', 'password']
 
 
 class RegistroForm(ModelForm):

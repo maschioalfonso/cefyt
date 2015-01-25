@@ -57,7 +57,23 @@ class Cursado(models.Model):
 
     def __str__(self):              # __unicode__ on Python 2
         return self.nombre
-        
+
+
+class DescubrimientoOpcion(models.Model):
+    opcion = models.CharField(max_length=MAX_LENGTH)
+
+    def __str__(self):              # __unicode__ on Python 2
+        return self.opcion
+
+
+class DescubrimientoCurso(models.Model): 
+    cursada = models.ForeignKey(Cursado)
+    alumno = models.ForeignKey(Alumno)
+    opcion = models.ForeignKey(DescubrimientoOpcion)
+
+    def __str__(self):              # __unicode__ on Python 2
+        return self.alumno.usuario.username + ' - ' + self.cursada.nombre + '-> ' + self.opcion.opcion
+
 class Cuota(models.Model):
     alumno = models.ForeignKey(Alumno)
     cursado = models.ForeignKey(Cursado)

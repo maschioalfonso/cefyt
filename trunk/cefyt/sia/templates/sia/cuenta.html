@@ -16,6 +16,17 @@
             {% endif %}
     	{% endfor %}
     </table>
-    <tr><td><input type="submit" value="Inscribirse" class="input"></td></tr>
+    <br>
+    <br>
+    Cómo conociste el curso?
+    <br>
+    <br>
+    <table>
+    {% for opcion in opcion_descubrimento %}
+        <tr><td><input type="radio" name="descubrimiento" value="{{ opcion.id }}"> {{ opcion }}</td></tr>
+    {% endfor %}
+    </table>
+    <br>
+    <input type="submit" value="Inscribirse" class="input">
 </div>
 {% endblock %}

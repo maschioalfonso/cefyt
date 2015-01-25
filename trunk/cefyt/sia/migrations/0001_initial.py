@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Alumno',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(serialize=False, auto_created=True, verbose_name='ID', primary_key=True)),
                 ('documento', models.CharField(max_length=255)),
                 ('fecha_de_nacimiento', models.DateField()),
                 ('provincia', models.CharField(max_length=255)),
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Cuota',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(serialize=False, auto_created=True, verbose_name='ID', primary_key=True)),
                 ('numero', models.IntegerField(default=0)),
                 ('fecha_de_pago', models.DateField()),
                 ('comprobante', models.CharField(max_length=255)),
@@ -44,14 +44,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Cursado',
             fields=[
-                ('nombre', models.CharField(serialize=False, primary_key=True, max_length=255)),
+                ('id', models.AutoField(serialize=False, auto_created=True, verbose_name='ID', primary_key=True)),
+                ('nombre', models.CharField(max_length=255, unique=True)),
                 ('duracion', models.IntegerField(default=0)),
-                ('costo_total_pesos', models.DecimalField(decimal_places=2, max_digits=7)),
-                ('costo_total_dolares', models.DecimalField(decimal_places=2, max_digits=7)),
-                ('costo_inscripcion_pesos', models.DecimalField(decimal_places=2, max_digits=7)),
-                ('costo_inscripcion_dolares', models.DecimalField(decimal_places=2, max_digits=7)),
+                ('costo_total_pesos', models.DecimalField(max_digits=7, decimal_places=2)),
+                ('costo_total_dolares', models.DecimalField(max_digits=7, decimal_places=2)),
+                ('costo_inscripcion_pesos', models.DecimalField(max_digits=7, decimal_places=2)),
+                ('costo_inscripcion_dolares', models.DecimalField(max_digits=7, decimal_places=2)),
                 ('inscripcion_abierta', models.BooleanField(default=False)),
-                ('alumno', models.ManyToManyField(blank=True, to='sia.Alumno', null=True)),
+                ('alumno', models.ManyToManyField(blank=True, null=True, to='sia.Alumno')),
             ],
             options={
             },
@@ -60,7 +61,17 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Curso',
             fields=[
-                ('nombre', models.CharField(serialize=False, primary_key=True, max_length=255)),
+                ('nombre', models.CharField(max_length=255, primary_key=True, serialize=False)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='DescubrimientoCurso',
+            fields=[
+                ('id', models.AutoField(serialize=False, auto_created=True, verbose_name='ID', primary_key=True)),
+                ('opcion', models.CharField(max_length=255)),
             ],
             options={
             },
@@ -69,7 +80,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Materia',
             fields=[
-                ('nombre', models.CharField(serialize=False, primary_key=True, max_length=255)),
+                ('nombre', models.CharField(max_length=255, primary_key=True, serialize=False)),
             ],
             options={
             },
@@ -78,7 +89,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Pais',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, verbose_name='ID', auto_created=True)),
+                ('id', models.AutoField(serialize=False, auto_created=True, verbose_name='ID', primary_key=True)),
                 ('nombre', models.CharField(max_length=255)),
             ],
             options={
@@ -95,6 +106,12 @@ class Migration(migrations.Migration):
             model_name='cursado',
             name='curso',
             field=models.ForeignKey(to='sia.Curso'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='cursado',
+            name='descubrimiento_curso',
+            field=models.ForeignKey(to='sia.DescubrimientoCurso'),
             preserve_default=True,
         ),
         migrations.AddField(
