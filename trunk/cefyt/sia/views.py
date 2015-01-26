@@ -26,11 +26,14 @@ def cuenta(request):
                'opcion_descubrimento' : opcion_descubrimento
               }
 
-    if request.method == "POST" and not Cursado.objects.filter(inscripcion_abierta=True):
+
+    # TO DO: Chequear si DescubrimientosOpcion no es vacío.
+    if request.method == "POST" and Cursado.objects.filter(inscripcion_abierta=True):
         cursado = Cursado.objects.get(id=request.POST.get('curso'))
         usuario = User.objects.get(username=request.user.username)
-        #alumno = Alumno.objects.get(usuario_username='marianitovlk@gmail.com')
+        alumno = Alumno.objects.get(usuario=usuario)
         cursado.alumno.add(alumno)
+        cursado.save()
         
 
         opcion = DescubrimientoOpcion.objects.get(id=request.POST.get('descubrimiento'))
