@@ -7,9 +7,9 @@ from sia.models import Alumno, Pais
 class RegistroForm(ModelForm):
     nombre = CharField()
     apellido = CharField()
-    email = EmailField(label='e-mail')
-    password = CharField(label='Contraseña')
-    pais = ModelChoiceField(queryset=Pais.objects.all(), empty_label=None, label='País Natal')
+    email = EmailField(label="e-mail")
+    password = CharField(label="Contrasena")
+    pais = ModelChoiceField(queryset=Pais.objects.all(), empty_label=None, label='Pais Natal')
 
     
     class Meta:
@@ -34,7 +34,7 @@ class RegistroForm(ModelForm):
                   'domicilio' : 'Domicilio',
                   'provincia' : 'Provincia',
                   'localidad' : 'Localidad',
-                  'telefono' : 'Teléfono',
-                  'telefono_alter' : 'Teléfono alternativo',
+                  'telefono' : "Telefono",
+                  'telefono_alter' : 'Telefono alternativo',
                   'fecha_de_nacimiento' : 'Fecha de nacimiento',
                  }

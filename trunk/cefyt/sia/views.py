@@ -8,14 +8,13 @@ from django.contrib.auth.decorators import login_required
 from sia.models import Pais, Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso
 from sia.forms import RegistroForm
 
-# TO DO: Agregar cómo conoció el curso.
 
 @login_required
 def index(request):
 
     context = {'mensaje': 'hola_mundo'
               }
-    return render(request, 'sia/index.html', context)
+    return render(request, 'sia/cuenta.html', context)
 
 
 @login_required
@@ -27,11 +26,12 @@ def cuenta(request):
                'opcion_descubrimento' : opcion_descubrimento
               }
 
-    if request.method == "POST":
+    if request.method == "POST" and not Cursado.objects.filter(inscripcion_abierta=True):
         cursado = Cursado.objects.get(id=request.POST.get('curso'))
-        #usuario = User.objects.get(username=request.user.username)
-        alumno = Alumno.objects.get(usuario__username='marianitovlk@gmail.com')
+        usuario = User.objects.get(username=request.user.username)
+        #alumno = Alumno.objects.get(usuario_username='marianitovlk@gmail.com')
         cursado.alumno.add(alumno)
+        
 
         opcion = DescubrimientoOpcion.objects.get(id=request.POST.get('descubrimiento'))
         descubrimiento_curso = DescubrimientoCurso(cursada=cursado, 
@@ -57,8 +57,8 @@ def registro(request):
                 username=request.POST.get('email'),
                 first_name=form.cleaned_data.get('nombre'),
                 last_name=form.cleaned_data.get('apellido'),
+                is_staff=True,
                 )
-            #(object, created)
             if not creado:
                 usuario_existente = True
             else:

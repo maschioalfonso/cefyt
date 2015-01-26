@@ -59,7 +59,7 @@
 		{% csrf_token %}
 		{{ form }}
 		<td><input type="submit" value="Iniciar sesión" class="input"></td>
-		<td><a href="http://127.0.0.1:8000/sia/registro/">Registrarse</a></td>
+		<td><a href="{% url 'sia:registro' %}">Registrarse</a></td>
 	</form>
 </table>
 </div>
