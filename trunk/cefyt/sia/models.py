@@ -27,14 +27,14 @@ class Alumno(models.Model):
 
 
 class Materia(models.Model):
-    nombre = models.CharField(max_length=MAX_LENGTH, primary_key=True)
+    nombre = models.CharField(max_length=MAX_LENGTH)
 
     def __str__(self):              # __unicode__ on Python 2
         return self.nombre
 
 
 class Curso(models.Model):
-    nombre = models.CharField(max_length=MAX_LENGTH, primary_key=True)
+    nombre = models.CharField(max_length=MAX_LENGTH)
     materias = models.ManyToManyField(Materia)
     
     def __str__(self):              # __unicode__ on Python 2
