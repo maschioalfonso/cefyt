@@ -9,39 +9,35 @@ from sia.models import Pais, Alumno, Cursado, DescubrimientoOpcion, Descubrimien
 from sia.forms import RegistroForm
 
 
-@login_required
-def index(request):
-
-    context = {'mensaje': 'hola_mundo'
-              }
-    return render(request, 'sia/cuenta.html', context)
-
 
 @login_required
 def cuenta(request):
-    cursados = Cursado.objects.all()
-    opcion_descubrimento = DescubrimientoOpcion.objects.all()
+    usuario = User.objects.get(username=request.user.username)
+    alumno = Alumno.objects.get(usuario=usuario)
+
+    cursados = Cursado.objects.filter(inscripcion_abierta=True)
+    cursados_inscripto = Cursado.objects.filter(alumno=alumno)
+
+    opciones_descubrimiento = DescubrimientoOpcion.objects.all()
+
+    if request.method == "POST":
+        if cursados:
+            cursado = Cursado.objects.get(id=request.POST.get('curso'))
+            cursado.alumno.add(alumno)
+            cursado.save()
+        
+        if opciones_descubrimiento:
+            opcion = DescubrimientoOpcion.objects.get(id=request.POST.get('descubrimiento'))
+            descubrimiento_curso = DescubrimientoCurso(cursada=cursado, alumno=alumno, opcion=opcion)
+            descubrimiento_curso.save()
+
+
     context = {'titulo': "Informacion de la cuenta",
                'lista_cursados': cursados,
-               'opcion_descubrimento' : opcion_descubrimento
+               'lista_cursados_inscripto' : cursados_inscripto,
+               'opcion_descubrimiento' : opciones_descubrimiento
               }
-
-
-    # TO DO: Chequear si DescubrimientosOpcion no es vacío.
-    if request.method == "POST" and Cursado.objects.filter(inscripcion_abierta=True):
-        cursado = Cursado.objects.get(id=request.POST.get('curso'))
-        usuario = User.objects.get(username=request.user.username)
-        alumno = Alumno.objects.get(usuario=usuario)
-        cursado.alumno.add(alumno)
-        cursado.save()
-        
-
-        opcion = DescubrimientoOpcion.objects.get(id=request.POST.get('descubrimiento'))
-        descubrimiento_curso = DescubrimientoCurso(cursada=cursado, 
-                                                   alumno=alumno, 
-                                                   opcion=opcion)
-        descubrimiento_curso.save()
-
+    
     return render(request, 'sia/cuenta.html', context)
 
 

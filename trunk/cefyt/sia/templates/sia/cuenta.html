@@ -1,7 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
-{{ titulo }} <br>
-{{ user }}
+{{ titulo }} {{ user }}
 <div id="content-main">
 <form method="POST", action>
 {% csrf_token %}
@@ -12,7 +11,7 @@
     <table>
     	{% for curso in lista_cursados %}
     		{% if curso.inscripcion_abierta %}
-            <tr><td><input type="radio" name="curso" value="{{ curso.id }}">{{ curso }}</input></td></tr>
+                <tr><td><input type="radio" name="curso" value="{{ curso.id }}" checked>{{ curso }}</input></td></tr>
             {% endif %}
     	{% endfor %}
     </table>
@@ -22,11 +21,20 @@
     <br>
     <br>
     <table>
-    {% for opcion in opcion_descubrimento %}
-        <tr><td><input type="radio" name="descubrimiento" value="{{ opcion.id }}"> {{ opcion }}</td></tr>
+    {% for opcion in opcion_descubrimiento %}
+        <tr><td><input type="radio" name="descubrimiento" value="{{ opcion.id }}" checked> {{ opcion }}</td></tr>
     {% endfor %}
     </table>
     <br>
     <input type="submit" value="Inscribirse" class="input">
+
+    <table>
+        {% if lista_cursados_inscriptos %}
+            <p>Actualmente estás registrado a los siguientes cursos:</p>
+        {% endif %}
+        {% for curso in lista_cursados_inscripto %}
+            <tr><td>{{ curso }}</td></tr>
+        {% endfor %}
+    </table>
 </div>
 {% endblock %}
