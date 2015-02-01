@@ -36,7 +36,7 @@ class Materia(models.Model):
 class Curso(models.Model):
     nombre = models.CharField(max_length=MAX_LENGTH)
     materias = models.ManyToManyField(Materia)
-    
+    descripcion = models.CharField(max_length=MAX_LENGTH)
     def __str__(self):              # __unicode__ on Python 2
         return self.nombre
 
@@ -48,11 +48,11 @@ class Cursado(models.Model):
     duracion = models.IntegerField(default=0) #Restringir de 1 a 12. CHOICES de 1 a 12 !
     # duracion = models.IntegerField(default=0, choices=[(x, x) for x in range(0,12)])
 
-    costo_total_pesos = models.DecimalField(max_digits=7, decimal_places=2)
+    costo_total_pesos = models.PositiveSmallIntegerField()
 
-    costo_total_dolares = models.DecimalField(max_digits=7, decimal_places=2)
-    costo_inscripcion_pesos = models.DecimalField(max_digits=7, decimal_places=2)
-    costo_inscripcion_dolares = models.DecimalField(max_digits=7, decimal_places=2)
+    costo_total_dolares = models.PositiveSmallIntegerField()
+    costo_inscripcion_pesos = models.PositiveSmallIntegerField()
+    costo_inscripcion_dolares = models.PositiveSmallIntegerField()
     inscripcion_abierta = models.BooleanField(default=False)
 
     def __str__(self):              # __unicode__ on Python 2

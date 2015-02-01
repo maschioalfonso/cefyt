@@ -15,14 +15,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Alumno',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('documento', models.CharField(max_length=255)),
                 ('fecha_de_nacimiento', models.DateField()),
                 ('provincia', models.CharField(max_length=255)),
                 ('localidad', models.CharField(max_length=255)),
                 ('domicilio', models.CharField(max_length=255)),
                 ('telefono', models.CharField(max_length=255)),
-                ('telefono_alter', models.CharField(max_length=255, blank=True, null=True)),
+                ('telefono_alter', models.CharField(max_length=255, null=True, blank=True)),
             ],
             options={
             },
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Cuota',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('numero', models.IntegerField(default=0)),
                 ('fecha_de_pago', models.DateField()),
                 ('comprobante', models.CharField(max_length=255)),
@@ -44,15 +44,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Cursado',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('nombre', models.CharField(unique=True, max_length=255)),
                 ('duracion', models.IntegerField(default=0)),
-                ('costo_total_pesos', models.DecimalField(max_digits=7, decimal_places=2)),
-                ('costo_total_dolares', models.DecimalField(max_digits=7, decimal_places=2)),
-                ('costo_inscripcion_pesos', models.DecimalField(max_digits=7, decimal_places=2)),
-                ('costo_inscripcion_dolares', models.DecimalField(max_digits=7, decimal_places=2)),
+                ('costo_total_pesos', models.PositiveSmallIntegerField()),
+                ('costo_total_dolares', models.PositiveSmallIntegerField()),
+                ('costo_inscripcion_pesos', models.PositiveSmallIntegerField()),
+                ('costo_inscripcion_dolares', models.PositiveSmallIntegerField()),
                 ('inscripcion_abierta', models.BooleanField(default=False)),
-                ('alumno', models.ManyToManyField(to='sia.Alumno', blank=True, null=True)),
+                ('alumno', models.ManyToManyField(to='sia.Alumno', null=True, blank=True)),
             ],
             options={
             },
@@ -61,7 +61,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Curso',
             fields=[
-                ('nombre', models.CharField(primary_key=True, serialize=False, max_length=255)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('nombre', models.CharField(max_length=255)),
+                ('descripcion', models.CharField(max_length=255)),
             ],
             options={
             },
@@ -70,7 +72,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DescubrimientoCurso',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('alumno', models.ForeignKey(to='sia.Alumno')),
                 ('cursada', models.ForeignKey(to='sia.Cursado')),
             ],
@@ -81,7 +83,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DescubrimientoOpcion',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('opcion', models.CharField(max_length=255)),
             ],
             options={
@@ -91,7 +93,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Materia',
             fields=[
-                ('nombre', models.CharField(primary_key=True, serialize=False, max_length=255)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('nombre', models.CharField(max_length=255)),
             ],
             options={
             },
@@ -100,7 +103,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Pais',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('nombre', models.CharField(max_length=255)),
             ],
             options={
