@@ -1,19 +1,52 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
 {{ titulo }} {{ user }}
+
+
+
 <div id="content-main">
 <form method="POST", action>
 {% csrf_token %}
     <br>
     {% if not lista_cursados %}
-        <tr><td><p style="color:blue">No hay cursos con inscripciones abiertas.</p></td></tr>        
+        <tr><td><p style="color:blue">No hay cursos con inscripciones abiertas.</p></td></tr>
+    {% else %}
+        <tr><td><p>Cursos disponibles:</p></td></tr>
     {% endif %}
+    
     <table>
-    	{% for curso in lista_cursados %}
-    		{% if curso.inscripcion_abierta %}
-                <tr><td><input type="radio" name="curso" value="{{ curso.id }}" checked>{{ curso }}</input></td></tr>
+        <col width="150">
+        <col width="600">
+        {% for curso in lista_cursados %}
+            {% if curso.inscripcion_abierta %}
+                <tr>
+                    <td>
+                        <input type="radio" name="curso" value="{{ curso.id }}" checked>
+                        <label><b>{{ curso }}</b></label></input>
+                    </td>
+                    <td>
+                        {{ curso.curso.descripcion }}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>Costo total en $ (pesos argentinos): {{curso.costo_total_pesos}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Costo total en u$s (dólares): {{curso.costo_total_dolares}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Costo inscripción en $ (pesos argentinos): {{curso.costo_inscripcion_pesos}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Costo inscripción en u$s (dólares): {{curso.costo_inscripcion_dolares}}</td>
+                </tr>
             {% endif %}
-    	{% endfor %}
+        {% endfor %}
     </table>
     <br>
     <br>
