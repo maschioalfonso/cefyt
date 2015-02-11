@@ -1,0 +1,25 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+
+Generar listados de inscriptos:
+<br>
+<br>
+
+<form method="POST" action="">
+{% csrf_token %}
+    <table>
+        {% for curso in lista_cursados %}
+            <tr>
+                <td>
+                    <input type="radio" name="curso" value="{{ curso.id }}" checked>
+                    <label><b>{{ curso }}</b></label></input>
+                </td>
+            </tr>
+        {% endfor %}
+        <tr><td>
+            <input type="submit" value="Generar" class="input">
+        </td></tr>
+    </table>
+</form>
+
+{% endblock %}

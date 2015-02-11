@@ -5,6 +5,12 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 
+from django.http import HttpResponse
+
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+
 from sia.models import Pais, Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso
 from sia.forms import RegistroForm
 
@@ -85,3 +91,66 @@ def registro(request):
               }
 
     return render(request, 'sia/registro.html', context)
+
+def generar_reporte(request):
+    cursados = Cursado.objects.filter()
+
+    if request.method == 'GET':
+        pass
+    elif request.method == 'POST':
+        cursado = Cursado.objects.get(id=request.POST.get('curso'))
+        return generar_pdf(cursado)
+
+    context = {'lista_cursados': cursados}
+    return render(request, 'sia/generar_reporte.html', context)
+
+def generar_pdf(cursado):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="somefilename.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=A4)
+    elements = []
+
+    alumnos = []
+    for alumno in cursado.alumno.all():
+        alumnos.append([alumno.usuario.first_name, alumno.documento])
+
+
+    datos = alumnos
+    t = Table(datos)
+    t.setStyle(TableStyle([('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
+                           ('BOX', (0,0), (-1,-1), 0.25, colors.black),
+                          ]))
+    elements.append(t)
+
+    # write the document to disk
+    doc.build(elements)
+
+    return response
+
+def reporte(request):
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="somefilename.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=A4)
+    elements = []
+
+    cursado = Cursado.objects.get(id=1)
+
+    alumnos = []
+    for alumno in cursado.alumno.all():
+        alumnos.append([alumno.usuario.first_name, alumno.documento])
+
+
+    datos = alumnos
+    t = Table(datos)
+    t.setStyle(TableStyle([('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
+                           ('BOX', (0,0), (-1,-1), 0.25, colors.black),
+                          ]))
+    elements.append(t)
+
+    # write the document to disk
+    doc.build(elements)
+
+    return response
