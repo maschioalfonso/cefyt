@@ -18,6 +18,9 @@ from sia.forms import RegistroForm
 
 @login_required
 def cuenta(request):
+    if request.method == "GET" and request.user.is_superuser:
+        return redirect("admin:index")
+
     usuario = User.objects.get(username=request.user.username)
     alumno = Alumno.objects.get(usuario=usuario)
 
@@ -37,13 +40,11 @@ def cuenta(request):
             descubrimiento_curso = DescubrimientoCurso(cursada=cursado, alumno=alumno, opcion=opcion)
             descubrimiento_curso.save()
 
-
     context = {'titulo': "Informacion de la cuenta",
                'lista_cursados': cursados,
                'lista_cursados_inscripto' : cursados_inscripto,
                'opcion_descubrimiento' : opciones_descubrimiento
               }
-    
     return render(request, 'sia/cuenta.html', context)
 
 
