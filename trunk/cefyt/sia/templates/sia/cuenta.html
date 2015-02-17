@@ -75,12 +75,34 @@
     <br>
     <input type="submit" value="Inscribirse" class="input">
 
+    <br>
+    <br>
     <table>
-        {% if lista_cursados_inscriptos %}
+        {% if lista_cursados_inscripto %}
             <p>Actualmente estás registrado a los siguientes cursos:</p>
         {% endif %}
         {% for curso in lista_cursados_inscripto %}
             <tr><td>{{ curso }}</td></tr>
+        {% endfor %}
+
+
+    </table>
+    
+    <br>
+    Estado de cuotas
+    <br>
+    <br>
+    <table>
+        {% if not lista_cuotas %}
+            Aún no tienes ninguna cuota abonada.
+        {% endif %}
+        {% for cuota in lista_cuotas %}
+            <tr>
+                <td>Curso: {{ cuota.cursado }}</td>
+                <td>Cuota nº: {{cuota.numero}}</td>
+                <td>Pagada el: {{cuota.fecha_de_pago}}</td>
+                <td>Número de comprobante: {{cuota.comprobante}}</td>
+            </tr>
         {% endfor %}
     </table>
 </div>

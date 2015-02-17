@@ -26,6 +26,7 @@ def cuenta(request):
 
     cursados = Cursado.objects.filter(inscripcion_abierta=True)
     cursados_inscripto = Cursado.objects.filter(alumno=alumno)
+    lista_cuotas = Cuota.objects.filter(alumno=alumno, pagado=True)
 
     opciones_descubrimiento = DescubrimientoOpcion.objects.all()
 
@@ -55,6 +56,7 @@ def cuenta(request):
                'lista_cursados': cursados,
                'lista_cursados_inscripto' : cursados_inscripto,
                'opcion_descubrimiento' : opciones_descubrimiento,
+               'lista_cuotas' : lista_cuotas
               }
     return render(request, 'sia/cuenta.html', context)
 
