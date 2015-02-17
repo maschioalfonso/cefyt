@@ -11,7 +11,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 
-from sia.models import Pais, Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso
+from sia.models import Pais, Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota
 from sia.forms import RegistroForm
 
 
@@ -31,19 +31,30 @@ def cuenta(request):
 
     if request.method == "POST":
         if cursados:
+
+            # Inscripción
             cursado = Cursado.objects.get(id=request.POST.get('curso'))
             cursado.alumno.add(alumno)
             cursado.save()
-        
+
+            # Generación de cuotas
+            cantidad_cuotas = cursado.duracion
+            for i in range(1, cantidad_cuotas + 1):
+                cuota = Cuota(alumno=alumno,
+                              cursado=cursado,
+                              numero=i,
+                        )
+                cuota.save()
+
         if opciones_descubrimiento:
             opcion = DescubrimientoOpcion.objects.get(id=request.POST.get('descubrimiento'))
             descubrimiento_curso = DescubrimientoCurso(cursada=cursado, alumno=alumno, opcion=opcion)
             descubrimiento_curso.save()
 
-    context = {'titulo': "Informacion de la cuenta",
+    context = {'titulo': "Informacion de la cuenta de: ",
                'lista_cursados': cursados,
                'lista_cursados_inscripto' : cursados_inscripto,
-               'opcion_descubrimiento' : opciones_descubrimiento
+               'opcion_descubrimiento' : opciones_descubrimiento,
               }
     return render(request, 'sia/cuenta.html', context)
 
