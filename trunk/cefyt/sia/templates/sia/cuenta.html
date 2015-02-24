@@ -41,7 +41,10 @@
                 <tr>
                     <td>
                         <input type="radio" name="curso" value="{{curso.id}}" checked>
-                        <label><b id="{{curso.id}}">{{ curso }}</b></label></input>
+                            <b>
+                                <label id="{{curso.id}}">{{ curso }}</label>
+                            </b>
+                        </input>
                     </td>
                     <td>
                         {{ curso.curso.descripcion }}
