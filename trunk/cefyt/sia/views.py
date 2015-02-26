@@ -9,11 +9,15 @@ from django.http import HttpResponse
 
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+#from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph,
+from reportlab.platypus import *
+from reportlab.lib.styles import getSampleStyleSheet
+
 
 from sia.models import Pais, Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota
 from sia.forms import RegistroForm
 
+import time
 
 
 @login_required
@@ -109,14 +113,13 @@ def registro(request):
 def generar_reporte(request):
     cursados = Cursado.objects.filter()
 
-    if request.method == 'GET':
-        pass
-    elif request.method == 'POST':
+    if request.method == 'POST':
         cursado = Cursado.objects.get(id=request.POST.get('curso'))
         return generar_pdf(cursado)
 
     context = {'lista_cursados': cursados}
     return render(request, 'sia/generar_reporte.html', context)
+
 
 def generar_pdf(cursado):
     response = HttpResponse(content_type='application/pdf')
@@ -125,14 +128,39 @@ def generar_pdf(cursado):
     doc = SimpleDocTemplate(response, pagesize=A4)
     elements = []
 
+    styles = getSampleStyleSheet()
+
+    # Titulo página
+    titulo = Paragraph("CEFyT - Centro de Estudios Filosóficos y Teológicos", styles["Heading2"])
+    elements.append(titulo)
+
+    # Cursado
+    curso = Paragraph("Curso: " + str(cursado), styles["Normal"])
+    elements.append(curso)
+
+    # Fecha
+    fecha = Paragraph("Fecha: " + time.strftime("%c"), styles["Normal"])
+    elements.append(fecha)
+
+    # Listado de inscriptos
+    cantidad_inscriptos = 0
     alumnos = []
+    alumnos.append(['Apellido', 'Nombre', 'Documento', 'País', 'Provincia', 'Localidad', 'Nombre de usuario'])
     for alumno in cursado.alumno.all():
-        alumnos.append([alumno.usuario.first_name, alumno.documento])
+        alumnos.append([alumno.usuario.last_name, alumno.usuario.first_name, alumno.documento, alumno.pais, alumno.provincia, alumno.localidad, alumno.usuario.username])
+        cantidad_inscriptos = cantidad_inscriptos + 1
 
+    numero_inscriptos = Paragraph("Cantidad de inscriptos: " + str(cantidad_inscriptos), styles["Normal"])
+    elements.append(numero_inscriptos)
 
+    linea_vacia = Paragraph(".", styles["Normal"])
+    elements.append(linea_vacia)
+
+    # Tabla de alumnos
     datos = alumnos
     t = Table(datos)
-    t.setStyle(TableStyle([('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
+    t.setStyle(TableStyle([('BACKGROUND', (0,0),(6,0), colors.lavender),
+                           ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
                            ('BOX', (0,0), (-1,-1), 0.25, colors.black),
                           ]))
     elements.append(t)
