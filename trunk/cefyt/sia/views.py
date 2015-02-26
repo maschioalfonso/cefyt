@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
@@ -37,12 +38,12 @@ def cuenta(request):
     if request.method == "POST":
         if cursados:
 
-            # Inscripción
+            # Inscripci0n
             cursado = Cursado.objects.get(id=request.POST.get('curso'))
             cursado.alumno.add(alumno)
             cursado.save()
 
-            # Generación de cuotas
+            # Generacion de cuotas
             cantidad_cuotas = cursado.duracion
             for i in range(1, cantidad_cuotas + 1):
                 cuota = Cuota(alumno=alumno,
@@ -147,7 +148,7 @@ def generar_pdf(cursado):
 
     styles = getSampleStyleSheet()
 
-    # Titulo página
+    # Titulo pagina
     titulo = Paragraph("CEFyT - Centro de Estudios Filosóficos y Teológicos", styles["Heading2"])
     elements.append(titulo)
 
