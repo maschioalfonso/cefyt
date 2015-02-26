@@ -53,6 +53,8 @@ class Cursado(models.Model):
     costo_total_dolares = models.DecimalField( decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     costo_inscripcion_pesos = models.DecimalField( decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     costo_inscripcion_dolares = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
+    costo_certificado_dolares = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
+    costo_certificado_pesos = models.DecimalField( decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     valor_cuota_pesos = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     valor_cuota_dolares = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     inscripcion_abierta = models.BooleanField(default=False)
@@ -83,6 +85,10 @@ class Cuota(models.Model):
     fecha_de_pago = models.DateField(blank=True, null=True)
     comprobante = models.CharField(max_length=MAX_LENGTH, blank=True, null=True)
     pagado = models.BooleanField(default=False)
+    costo_certificado_dolares = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
+    costo_certificado_pesos = models.DecimalField( decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
+    valor_cuota_pesos = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
+    valor_cuota_dolares = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     
     def __str__(self):              # __unicode__ on Python 2
         etiqueta = self.alumno.usuario.first_name + ': ' + self.cursado.nombre + ' - ' + 'Cuota: ' + str(self.numero)

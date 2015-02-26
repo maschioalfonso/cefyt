@@ -28,7 +28,7 @@ def cuenta(request):
     usuario = User.objects.get(username=request.user.username)
     alumno = Alumno.objects.get(usuario=usuario)
 
-    cursados = Cursado.objects.filter(inscripcion_abierta=True)
+    cursados = Cursado.objects.filter(inscripcion_abierta=True).exclude(alumno=alumno)
     cursados_inscripto = Cursado.objects.filter(alumno=alumno)
     lista_cuotas = Cuota.objects.filter(alumno=alumno, pagado=True)
 
@@ -48,13 +48,30 @@ def cuenta(request):
                 cuota = Cuota(alumno=alumno,
                               cursado=cursado,
                               numero=i,
+                              costo_certificado_dolares = 0,
+                              costo_certificado_pesos = 0,
+                              valor_cuota_pesos = cursado.valor_cuota_pesos,
+                              valor_cuota_dolares = cursado.valor_cuota_dolares
                         )
                 cuota.save()
+
+            # Costo certificado
+            cuota_certificado = Cuota(alumno=alumno,
+                                    cursado=cursado,
+                                    numero=cantidad_cuotas + 1,
+                                    costo_certificado_dolares = cursado.costo_certificado_dolares,
+                                    costo_certificado_pesos = cursado.costo_certificado_pesos,
+                                    valor_cuota_pesos = 0,
+                                    valor_cuota_dolares = 0
+                                )
+            cuota_certificado.save()
 
         if opciones_descubrimiento:
             opcion = DescubrimientoOpcion.objects.get(id=request.POST.get('descubrimiento'))
             descubrimiento_curso = DescubrimientoCurso(cursada=cursado, alumno=alumno, opcion=opcion)
             descubrimiento_curso.save()
+
+        return redirect("sia:cuenta")
 
     context = {'titulo': "Informacion de la cuenta de: ",
                'lista_cursados': cursados,
