@@ -141,7 +141,7 @@ def generar_reporte(request):
 
 def generar_pdf(cursado):
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="somefilename.pdf"'
+    response['Content-Disposition'] = 'filename="%s".pdf' %(cursado.nombre)
 
     doc = SimpleDocTemplate(response, pagesize=A4)
     elements = []
