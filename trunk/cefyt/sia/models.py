@@ -34,25 +34,29 @@ class Materia(models.Model):
     class Meta:
         verbose_name_plural = "Materias"
     nombre = models.CharField(max_length=MAX_LENGTH)
-    
+
     def __str__(self):              # __unicode__ on Python 2
         return self.nombre
 
 
 class Curso(models.Model):
+
     class Meta:
         verbose_name_plural = "Cursos"
+
     nombre = models.CharField(max_length=MAX_LENGTH)
     materias = models.ManyToManyField(Materia)
-    descripcion = models.CharField(max_length=MAX_LENGTH)   
-    
+    descripcion = models.CharField(max_length=MAX_LENGTH, blank=True, null=True)
+
     def __str__(self):              # __unicode__ on Python 2
         return self.nombre
 
 
 class Cursado(models.Model):
+
     class Meta:
         verbose_name_plural = "Cursados"
+
     nombre = models.CharField(max_length=MAX_LENGTH, unique=True)
     curso = models.ForeignKey(Curso)
     alumno = models.ManyToManyField(Alumno, blank=True, null=True)
@@ -65,16 +69,17 @@ class Cursado(models.Model):
     valor_cuota_pesos = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     valor_cuota_dolares = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     inscripcion_abierta = models.BooleanField(default=False)
-    
+
     def __str__(self):              # __unicode__ on Python 2
         return self.nombre
 
 
 class DescubrimientoOpcion(models.Model):
+
     class Meta:
         verbose_name_plural = "Descubrimiento opciones"
     opcion = models.CharField(max_length=MAX_LENGTH)
-    
+
     def __str__(self):              # __unicode__ on Python 2
         return self.opcion
 
@@ -83,7 +88,7 @@ class DescubrimientoCurso(models.Model):
     cursada = models.ForeignKey(Cursado)
     alumno = models.ForeignKey(Alumno)
     opcion = models.ForeignKey(DescubrimientoOpcion)
-    
+
     def __str__(self):              # __unicode__ on Python 2
         return self.alumno.usuario.username + ' - ' + self.cursada.nombre + '-> ' + self.opcion.opcion
 
