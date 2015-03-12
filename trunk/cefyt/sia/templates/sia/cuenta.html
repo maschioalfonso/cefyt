@@ -41,18 +41,21 @@
 {% for curso in lista_cursados %}
     {% if curso.inscripcion_abierta %}
         <tr><td><input type="radio" name="curso" value="{{curso.id}}" checked><b><label id="{{curso.id}}">{{ curso }}</label></b></input></td><td>{{ curso.curso.descripcion }}</td></tr>
+
         <tr><td></td><td>Costo inscripción en $ (pesos argentinos): {{curso.costo_inscripcion_pesos}}</td></tr>
-        <tr><td></td><td>Costo inscripción en u$s (dólares): {{curso.costo_inscripcion_dolares}}</td></tr>
         <tr><td></td><td>Valor cuota en $ (pesos argentinos): {{curso.valor_cuota_pesos}}</td></tr>
-        <tr><td></td><td>Valor cuota en u$s (dólares): {{curso.valor_cuota_dolares}}</td></tr>
-        <tr><td></td><td>Cantidad de cuotas: {{curso.duracion}}</td></tr>
         <tr><td></td><td>Costo certificado en $ (pesos argentinos): {{curso.costo_certificado_pesos}}</td></tr>
+
+        <tr><td></td><td>Costo inscripción en u$s (dólares): {{curso.costo_inscripcion_dolares}}</td></tr>
+        <tr><td></td><td>Valor cuota en u$s (dólares): {{curso.valor_cuota_dolares}}</td></tr>
         <tr><td></td><td>Costo certificado en u$s (dólares): {{curso.costo_certificado_dolares}}</td></tr>
+
+        <tr><td></td><td>Cantidad de cuotas: {{curso.duracion}}</td></tr>
     {% endif %}
 {% endfor %}
 </table>
 
-{% if lista_cursados %}
+{% if lista_cursados %} <!-- TO DO: (BUG) Filtrar si lista_cursados tienen inscripciones abiertas -->
     <!-- Lista de opciones de ¿Cómo conociste el curso? -->
     <br><br>Cómo conociste el curso?<br><br>
     <table>
@@ -91,7 +94,7 @@ Estado de cuotas
     {% endif %}
     {% for cuota in lista_cuotas %}
         <tr>
-            <td>Curso: {{ cuota.cursado }}</td>
+            <td>Curso: {{cuota.cursado}}</td>
             <td>Cuota nº: {{cuota.numero}}</td>
             <td>Pagada el: {{cuota.fecha_de_pago}}</td>
             <td>Número de comprobante: {{cuota.comprobante}}</td>
