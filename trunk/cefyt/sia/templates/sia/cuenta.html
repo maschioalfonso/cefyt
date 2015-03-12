@@ -33,90 +33,71 @@
         <tr><td><p>Cursos disponibles:</p></td></tr>
     {% endif %}
     
+
+<!-- Lista de cursos con inscripción abierta -->
+<table>
+<col width="150">
+<col width="600">
+{% for curso in lista_cursados %}
+    {% if curso.inscripcion_abierta %}
+        <tr><td><input type="radio" name="curso" value="{{curso.id}}" checked><b><label id="{{curso.id}}">{{ curso }}</label></b></input></td><td>{{ curso.curso.descripcion }}</td></tr>
+        <tr><td></td><td>Costo inscripción en $ (pesos argentinos): {{curso.costo_inscripcion_pesos}}</td></tr>
+        <tr><td></td><td>Costo inscripción en u$s (dólares): {{curso.costo_inscripcion_dolares}}</td></tr>
+        <tr><td></td><td>Valor cuota en $ (pesos argentinos): {{curso.valor_cuota_pesos}}</td></tr>
+        <tr><td></td><td>Valor cuota en u$s (dólares): {{curso.valor_cuota_dolares}}</td></tr>
+        <tr><td></td><td>Cantidad de cuotas: {{curso.duracion}}</td></tr>
+        <tr><td></td><td>Costo certificado en $ (pesos argentinos): {{curso.costo_certificado_pesos}}</td></tr>
+        <tr><td></td><td>Costo certificado en u$s (dólares): {{curso.costo_certificado_dolares}}</td></tr>
+    {% endif %}
+{% endfor %}
+</table>
+
+{% if lista_cursados %}
+    <!-- Lista de opciones de ¿Cómo conociste el curso? -->
+    <br><br>Cómo conociste el curso?<br><br>
     <table>
-        <col width="150">
-        <col width="600">
-        {% for curso in lista_cursados %}
-            {% if curso.inscripcion_abierta %}
-                <tr>
-                    <td>
-                        <input type="radio" name="curso" value="{{curso.id}}" checked>
-                            <b>
-                                <label id="{{curso.id}}">{{ curso }}</label>
-                            </b>
-                        </input>
-                    </td>
-                    <td>
-                        {{ curso.curso.descripcion }}
-                    </td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Costo inscripción en $ (pesos argentinos): {{curso.costo_inscripcion_pesos}}</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Costo inscripción en u$s (dólares): {{curso.costo_inscripcion_dolares}}</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>Cantidad de cuotas: {{curso.duracion}}</td>
-                </tr>
-
-                <tr>
-                    <td></td>
-                    <td>Valor cuota en $ (pesos argentinos): {{curso.valor_cuota_pesos}}</td>
-                </tr>
-
-                <tr>
-                    <td></td>
-                    <td>Valor cuota en u$s (dólares): {{curso.valor_cuota_dolares}}</td>
-                </tr>
-            {% endif %}
+        {% for opcion in opcion_descubrimiento %}
+            <tr><td><input type="radio" name="descubrimiento" value="{{ opcion.id }}" checked> {{ opcion }}</td></tr>
         {% endfor %}
     </table>
-    <br>
-    <br>
-    Cómo conociste el curso?
-    <br>
-    <br>
-    <table>
-    {% for opcion in opcion_descubrimiento %}
-        <tr><td><input type="radio" name="descubrimiento" value="{{ opcion.id }}" checked> {{ opcion }}</td></tr>
-    {% endfor %}
-    </table>
+
+    <!-- Botón inscribirse -->
     <br>
     <input type="submit" value="Inscribirse" class="input">
-
     <br>
     <br>
-    <table>
-        {% if lista_cursados_inscripto %}
-            <p>Actualmente estás registrado a los siguientes cursos:</p>
-        {% endif %}
-        {% for curso in lista_cursados_inscripto %}
-            <tr><td>{{ curso }}</td></tr>
-        {% endfor %}
+{% endif %}
 
 
-    </table>
-    
-    <br>
-    Estado de cuotas
-    <br>
-    <br>
-    <table>
-        {% if not lista_cuotas %}
-            Aún no tienes ninguna cuota abonada.
-        {% endif %}
-        {% for cuota in lista_cuotas %}
-            <tr>
-                <td>Curso: {{ cuota.cursado }}</td>
-                <td>Cuota nº: {{cuota.numero}}</td>
-                <td>Pagada el: {{cuota.fecha_de_pago}}</td>
-                <td>Número de comprobante: {{cuota.comprobante}}</td>
-            </tr>
-        {% endfor %}
-    </table>
+<!-- Cursos inscriptos -->
+<table>
+    {% if lista_cursados_inscripto %}
+        <p>Actualmente estás registrado a los siguientes cursos:</p>
+    {% endif %}
+    {% for curso in lista_cursados_inscripto %}
+        <tr><td>{{ curso }}</td></tr>
+    {% endfor %}
+</table>
+
+
+<!-- Listado de cuotas -->
+<br>
+Estado de cuotas
+<br>
+<br>
+<table>
+    {% if not lista_cuotas %}
+        Aún no tienes ninguna cuota abonada.
+    {% endif %}
+    {% for cuota in lista_cuotas %}
+        <tr>
+            <td>Curso: {{ cuota.cursado }}</td>
+            <td>Cuota nº: {{cuota.numero}}</td>
+            <td>Pagada el: {{cuota.fecha_de_pago}}</td>
+            <td>Número de comprobante: {{cuota.comprobante}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
 </div>
 {% endblock %}
