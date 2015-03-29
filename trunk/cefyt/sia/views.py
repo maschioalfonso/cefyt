@@ -204,10 +204,9 @@ def generar_cupon(request):
     titulo = Paragraph("CEFyT - Centro de Estudios Filosóficos y Teológicos", styles["Heading2"])
     elements.append(titulo)
 
-    # Datos
-    info_cupon = [['Apellido', 'Nombre']]
-    t = Table(info_cupon)
-    elements.append(t)
+
+    titulo = Paragraph("Pepe Mujica", styles["Normal"])
+    elements.append(titulo)
 
     # Código barras
     tb=0.254320987654 * mm # thin bar
@@ -215,7 +214,18 @@ def generar_cupon(request):
     bcl=150 * mm # barcode length
     digits = "04198000000000000002131008609000127646104171"
     bc=I2of5(digits,barWidth=tb,ratio=3,barHeight=bh,bearers=0,quiet=0,checksum=0)
-    elements.append(bc)
+    #elements.append(bc)
+
+    # Datos
+    info_cupon = [ ['Señor/a:', 'Mujica, Pepe.'],
+                   ['Domicilio:', 'Alguna calle de Uruguay', '1165'],
+                   ['En concepto de:', 'Cuota nº5 Curso electronica'],
+                   ['Total a pagar:', '$120'],
+                   [bc]
+                 ]
+    t = Table(info_cupon)
+
+    elements.append(t)
 
 
     doc.build(elements)
