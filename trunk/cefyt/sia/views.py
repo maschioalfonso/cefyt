@@ -193,6 +193,24 @@ def generar_pdf(cursado):
 def generar_cupon(request):
     response = HttpResponse(content_type='application/pdf')
 
+    # Generación del número cupón
+    nro_gire = "4057"           # Valor fijo
+    nro_cliente = "00001"       # Número de cliente: 5 dígitos
+    tipo_comprobante = "1"      # Tipo de comprobante: 1 dígito
+    nro_comprobante = "000001"  # Número de comprobante: 6 dígitos
+    importe = "012000"          # Importe: 4 parte entera, 2 parte decimal
+    anio_vencimiento = "15"     # Año vencimiento: 2 dígitos
+    mes_vencimiento = "05"      # Mes vencimiento: 2 dígitos
+    dia_vencimiento = "31"      # Día vencimiento: 2 dígitos
+    reservado = "0"             # Espacio reservado
+    digito_verificador = "9"    # Digito verificador
+
+    nro_cupon = nro_gire + nro_cliente + tipo_comprobante + nro_comprobante + \
+                importe + anio_vencimiento + mes_vencimiento + dia_vencimiento + \
+                reservado + digito_verificador
+
+
+    # Nombre del archivo
     cupon = "Nombrecupon"
     response['Content-Disposition'] = 'filename="%s".pdf' %(cupon)
 
@@ -200,33 +218,60 @@ def generar_cupon(request):
     elements = []
     styles = getSampleStyleSheet()
 
-    # Titulo
-    titulo = Paragraph("CEFyT - Centro de Estudios Filosóficos y Teológicos", styles["Heading2"])
-    elements.append(titulo)
+    # Título
+    titulo1 = Paragraph("SEMINARIO VILLA CLARET", styles["Heading2"])
+    titulo2 = Paragraph("CEFyT - Centro de Estudios Filosóficos y Teológicos", styles["Heading5"])
+    elements.append(titulo1)
+    elements.append(titulo2)
 
+    # Datos
+    direccion = Paragraph("Av. Padre Claret 5601", styles["Normal"])
+    elements.append(direccion)
 
-    titulo = Paragraph("Pepe Mujica", styles["Normal"])
-    elements.append(titulo)
+    barrio = Paragraph("Bº Padre Claret", styles["Normal"])
+    elements.append(barrio)
+
+    localidad = Paragraph("X5022LJQ Córdoba, República Argentina", styles["Normal"])
+    elements.append(localidad)
+
+    cuit = Paragraph("C.U.I.T.: 30-67870110-2", styles["Normal"])
+    elements.append(cuit)
+
+    # Datos del cupón
+    apellido = "Lennon"
+    nombre = "Jhon"
+
+    domicilio = "Nombre de calle número"
+    localidad = "Localidad"
+    provincia = "Provincia"
+    pais = "Argentina"
+
+    nro_cuota = "Cuota nº " + "3"
+    cursado = "Curso " + "Electronica2015"
+    valor_cuota = "$" + "140"
+
+    info_cupon = [ ['Señor/a:', apellido + ', ' + nombre],
+                   ['Domicilio:', domicilio + ', ' + localidad + ', ' + provincia + ', ' + pais],
+                   ['En concepto de:', nro_cuota + ', ' + cursado],
+                   ['Total a pagar:', valor_cuota],
+                 ]
+    t = Table(info_cupon)
+    t.setStyle(TableStyle([('FONTNAME',(0,0),(-1,-1),'Helvetica'),
+                           ('FONTNAME',(0,0),(0,-1),'Helvetica-Bold'),
+                          ]))
+
+    elements.append(t)
+
 
     # Código barras
     tb=0.254320987654 * mm # thin bar
     bh=20 * mm # bar height
-    bcl=150 * mm # barcode length
-    digits = "04198000000000000002131008609000127646104171"
-    bc=I2of5(digits,barWidth=tb,ratio=3,barHeight=bh,bearers=0,quiet=0,checksum=0)
-    #elements.append(bc)
+    bcl=90 * mm # barcode length
+    bc=I2of5(nro_cupon,barWidth=tb,ratio=3,barHeight=bh,bearers=0,quiet=0,checksum=1)
+    elements.append(bc)
 
-    # Datos
-    info_cupon = [ ['Señor/a:', 'Mujica, Pepe.'],
-                   ['Domicilio:', 'Alguna calle de Uruguay', '1165'],
-                   ['En concepto de:', 'Cuota nº5 Curso electronica'],
-                   ['Total a pagar:', '$120'],
-                   [bc]
-                 ]
-    t = Table(info_cupon)
-
-    elements.append(t)
-
+    digitos_cupon = Paragraph(nro_cupon, styles["Normal"])
+    elements.append(digitos_cupon)
 
     doc.build(elements)
 
