@@ -1,4 +1,4 @@
-from django.forms import ModelForm, PasswordInput, Form, EmailField, CharField, ModelChoiceField
+from django.forms import ModelForm, PasswordInput, Form, EmailField, CharField, ModelChoiceField, TextInput, IntegerField
 from django.contrib.auth.models import User
 from sia.models import Alumno, Pais
 
@@ -7,6 +7,7 @@ class RegistroForm(ModelForm):
     nombre = CharField()
     apellido = CharField()
     email = EmailField(label="e-mail")
+    documento = IntegerField(label='Documento', min_value=1)
     password = CharField(widget=PasswordInput(),label="Contrasena")
     pais = ModelChoiceField(queryset=Pais.objects.all(), empty_label=None, label='Pais')
 

@@ -68,7 +68,7 @@ class Cursado(models.Model):
     nombre = models.CharField(unique=True, max_length=MAX_LENGTH)
     curso = models.ForeignKey(Curso)
     alumno = models.ManyToManyField(Alumno, blank=True, null=True)
-    duracion = models.IntegerField(default=0,validators=[MinValueValidator(0),MaxValueValidator(12)]) #Restringir de 1 a 12. CHOICES de 1 a 12 !
+    duracion = models.IntegerField(default=0,validators=[MinValueValidator(1),MaxValueValidator(12)]) #Restringir de 1 a 12. CHOICES de 1 a 12 !
     # duracion = models.IntegerField(default=0, choices=[(x, x) for x in range(0,12)])
     costo_inscripcion_pesos = models.DecimalField( decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     costo_inscripcion_dolares = models.DecimalField(decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
