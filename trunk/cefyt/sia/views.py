@@ -30,6 +30,8 @@ def cuenta(request):
     usuario = User.objects.get(username=request.user.username)
     alumno = Alumno.objects.get(usuario=usuario)
 
+    es_Argentino = alumno.pais.nombre == "Argentina"
+
     cursados = Cursado.objects.filter(inscripcion_abierta=True).exclude(alumno=alumno)
     cursados_inscripto = Cursado.objects.filter(alumno=alumno)
     lista_cuotas = Cuota.objects.filter(alumno=alumno)
@@ -75,8 +77,8 @@ def cuenta(request):
 
         return redirect("sia:cuenta")
 
-    context = {'titulo': "Informacion de la cuenta de: ",
-               'lista_cursados': cursados,
+    context = {'lista_cursados': cursados,
+               'es_Argentino' : es_Argentino,
                'lista_cursados_inscripto' : cursados_inscripto,
                'opcion_descubrimiento' : opciones_descubrimiento,
                'lista_cuotas' : lista_cuotas
