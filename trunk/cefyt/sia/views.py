@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.contrib.auth.views import logout
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
@@ -130,6 +131,9 @@ def registro(request):
     return render(request, 'sia/registro.html', context)
 
 def generar_reporte(request):
+    if not request.user.is_superuser:
+        return redirect("sia:cuenta")
+
     cursados = Cursado.objects.filter()
 
     if request.method == 'POST':

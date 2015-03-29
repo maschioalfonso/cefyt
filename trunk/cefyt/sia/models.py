@@ -22,6 +22,7 @@ class Alumno(models.Model):
         verbose_name_plural = "Alumnos"
 
     usuario = models.OneToOneField(User)
+    usuario_aula_virtual = models.CharField(max_length=MAX_LENGTH)
     documento = models.CharField(max_length=MAX_LENGTH)
     fecha_de_nacimiento = models.DateField()
     pais = models.ForeignKey("Pais")
