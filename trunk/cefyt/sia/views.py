@@ -39,12 +39,12 @@ def cuenta(request):
     if request.method == "POST":
         if cursados:
 
-            # Inscripci0n
+            # Inscripción
             cursado = Cursado.objects.get(id=request.POST.get('curso'))
             cursado.alumno.add(alumno)
             cursado.save()
 
-            # Generacion de cuotas
+            # Generación de cuotas
             cantidad_cuotas = cursado.duracion
             for i in range(1, cantidad_cuotas + 1):
                 cuota = Cuota(alumno=alumno,
@@ -193,12 +193,19 @@ def generar_pdf(cursado):
 def generar_cupon(request):
     response = HttpResponse(content_type='application/pdf')
 
+    usuario = User.objects.get(username=request.user.username)
+    alumno = Alumno.objects.get(usuario=usuario)
+    cuota = Cuota.objects.get(id=request.POST.get('cuota'))
+
+    cupon_valor = str('%.2f' % cuota.valor_cuota_pesos)
+
+
     # Generación del número cupón
     nro_gire = "4057"           # Valor fijo
     nro_cliente = "00001"       # Número de cliente: 5 dígitos
     tipo_comprobante = "1"      # Tipo de comprobante: 1 dígito
     nro_comprobante = "000001"  # Número de comprobante: 6 dígitos
-    importe = "012000"          # Importe: 4 parte entera, 2 parte decimal
+    importe = cupon_valor.replace(".", "")       # Importe: 4 parte entera, 2 parte decimal
     anio_vencimiento = "15"     # Año vencimiento: 2 dígitos
     mes_vencimiento = "05"      # Mes vencimiento: 2 dígitos
     dia_vencimiento = "31"      # Día vencimiento: 2 dígitos
@@ -238,17 +245,17 @@ def generar_cupon(request):
     elements.append(cuit)
 
     # Datos del cupón
-    apellido = "Lennon"
-    nombre = "Jhon"
+    apellido = alumno.usuario.last_name
+    nombre = alumno.usuario.first_name
 
-    domicilio = "Nombre de calle número"
-    localidad = "Localidad"
-    provincia = "Provincia"
-    pais = "Argentina"
+    domicilio = alumno.domicilio
+    localidad = alumno.localidad
+    provincia = alumno.provincia
+    pais = alumno.pais.nombre
 
-    nro_cuota = "Cuota nº " + "3"
-    cursado = "Curso " + "Electronica2015"
-    valor_cuota = "$" + "140"
+    nro_cuota = "Cuota nº " + str(cuota.numero)
+    cursado = "Curso " + cuota.cursado.nombre
+    valor_cuota = "$" + cupon_valor
 
     info_cupon = [ ['Señor/a:', apellido + ', ' + nombre],
                    ['Domicilio:', domicilio + ', ' + localidad + ', ' + provincia + ', ' + pais],
@@ -272,6 +279,14 @@ def generar_cupon(request):
 
     digitos_cupon = Paragraph(nro_cupon, styles["Normal"])
     elements.append(digitos_cupon)
+
+
+    #digitos_cupon = nro_gire + ' ' + nro_cliente + ' ' + tipo_comprobante + ' ' + nro_comprobante + ' ' + \
+    #            importe + ' ' + anio_vencimiento + ' ' + mes_vencimiento + ' ' + dia_vencimiento + ' ' + \
+    #            reservado + ' ' + digito_verificador
+    #digitos_cupon = Paragraph(digitos_cupon, styles["Normal"])
+    #elements.append(digitos_cupon)
+
 
     doc.build(elements)
 

@@ -82,8 +82,11 @@
     {% endfor %}
 </table>
 
+</form>
 
 <!-- Listado de cuotas -->
+<form action="{% url 'sia:generar_cupon' %}" method="POST">
+{% csrf_token %}
 <br>
 Estado de cuotas
 <br>
@@ -98,6 +101,7 @@ Estado de cuotas
         <td>Cuota nº: {{cuota.numero}}</td>
         {% if cuota.pagado == False%}
             <td>Cuota aún no abonada.</td>
+            <td><input type="radio" name="cuota" value="{{cuota.id}}" checked></td>
         {% else %}
             <td>Pagada el: {{cuota.fecha_de_pago}}</td>
             <td>Número de comprobante: {{cuota.comprobante}}</td>
@@ -105,6 +109,8 @@ Estado de cuotas
         </tr>
     {% endfor %}
 </table>
+<input type="submit" value="Generar comprobante" class="input">
+</form>
 
 </div>
 {% endblock %}
