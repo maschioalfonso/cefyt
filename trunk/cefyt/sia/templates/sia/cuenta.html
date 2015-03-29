@@ -94,10 +94,14 @@ Estado de cuotas
     {% endif %}
     {% for cuota in lista_cuotas %}
         <tr>
-            <td>Curso: {{cuota.cursado}}</td>
-            <td>Cuota nº: {{cuota.numero}}</td>
+        <td>Curso: {{cuota.cursado}}</td>
+        <td>Cuota nº: {{cuota.numero}}</td>
+        {% if cuota.pagado == False%}
+            <td>Cuota aún no abonada.</td>
+        {% else %}
             <td>Pagada el: {{cuota.fecha_de_pago}}</td>
             <td>Número de comprobante: {{cuota.comprobante}}</td>
+        {% endif %}
         </tr>
     {% endfor %}
 </table>

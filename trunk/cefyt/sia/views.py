@@ -8,11 +8,12 @@ from django.contrib.auth.decorators import login_required
 
 from django.http import HttpResponse
 
+from reportlab.graphics.barcode.common import I2of5
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-#from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph,
-from reportlab.platypus import *
 from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.platypus import *
 
 
 from sia.models import Pais, Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota
@@ -31,7 +32,7 @@ def cuenta(request):
 
     cursados = Cursado.objects.filter(inscripcion_abierta=True).exclude(alumno=alumno)
     cursados_inscripto = Cursado.objects.filter(alumno=alumno)
-    lista_cuotas = Cuota.objects.filter(alumno=alumno, pagado=True)
+    lista_cuotas = Cuota.objects.filter(alumno=alumno)
 
     opciones_descubrimiento = DescubrimientoOpcion.objects.all()
 
@@ -148,7 +149,7 @@ def generar_pdf(cursado):
 
     styles = getSampleStyleSheet()
 
-    # Titulo pagina
+    # Titulo página
     titulo = Paragraph("CEFyT - Centro de Estudios Filosóficos y Teológicos", styles["Heading2"])
     elements.append(titulo)
 
@@ -188,29 +189,37 @@ def generar_pdf(cursado):
 
     return response
 
-def reporte(request):
 
+def generar_cupon(request):
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="somefilename.pdf"'
+
+    cupon = "Nombrecupon"
+    response['Content-Disposition'] = 'filename="%s".pdf' %(cupon)
 
     doc = SimpleDocTemplate(response, pagesize=A4)
     elements = []
+    styles = getSampleStyleSheet()
 
-    cursado = Cursado.objects.get(id=1)
+    # Titulo
+    titulo = Paragraph("CEFyT - Centro de Estudios Filosóficos y Teológicos", styles["Heading2"])
+    elements.append(titulo)
 
-    alumnos = []
-    for alumno in cursado.alumno.all():
-        alumnos.append([alumno.usuario.first_name, alumno.documento])
-
-
-    datos = alumnos
-    t = Table(datos)
-    t.setStyle(TableStyle([('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
-                           ('BOX', (0,0), (-1,-1), 0.25, colors.black),
-                          ]))
+    # Datos
+    info_cupon = [['Apellido', 'Nombre']]
+    t = Table(info_cupon)
     elements.append(t)
 
-    # write the document to disk
+    # Código barras
+    tb=0.254320987654 * mm # thin bar
+    bh=20 * mm # bar height
+    bcl=150 * mm # barcode length
+    digits = "04198000000000000002131008609000127646104171"
+    bc=I2of5(digits,barWidth=tb,ratio=3,barHeight=bh,bearers=0,quiet=0,checksum=0)
+    elements.append(bc)
+
+
     doc.build(elements)
 
     return response
+
+# BUG: Si se registra, intenta inscribirse a un curso y pone cancelar al cartel de advertencia.
