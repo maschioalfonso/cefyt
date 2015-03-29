@@ -25,10 +25,9 @@
 <form onsubmit=ConfirmarInscripcion() method="POST", action>
 {% csrf_token %}
     <br>
+    <tr><td><h1>Cursos disponibles</h1></td></tr>
     {% if not lista_cursados %}
         <tr><td><p style="color:blue">No hay cursos con inscripciones abiertas a los que no estés inscripto.</p></td></tr>
-    {% else %}
-        <tr><td><p>Cursos disponibles:</p></td></tr>
     {% endif %}
     
 
@@ -75,10 +74,10 @@
 <!-- Cursos inscriptos -->
 <table>
     {% if lista_cursados_inscripto %}
-        <p>Actualmente estás registrado a los siguientes cursos:</p>
+        <h1>Actualmente estás registrado a los siguientes cursos:<h1>
     {% endif %}
     {% for curso in lista_cursados_inscripto %}
-        <tr><td>{{ curso }}</td></tr>
+        <tr><td><label>{{curso}}</label></td></tr>
     {% endfor %}
 </table>
 
@@ -88,7 +87,7 @@
 <form action="{% url 'sia:generar_cupon' %}" method="POST">
 {% csrf_token %}
 <br>
-Estado de cuotas
+<h1>Estado de cuotas</h1>
 <br>
 <br>
 <table>
