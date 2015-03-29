@@ -8,7 +8,7 @@ class RegistroForm(ModelForm):
     apellido = CharField()
     email = EmailField(label="e-mail")
     password = CharField(widget=PasswordInput(),label="Contrasena")
-    pais = ModelChoiceField(queryset=Pais.objects.all(), empty_label=None, label='Pais Natal')
+    pais = ModelChoiceField(queryset=Pais.objects.all(), empty_label=None, label='Pais')
 
     
     class Meta:
