@@ -1,7 +1,5 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
-{{ titulo }} {{ user }}
-
 
 <script>
     function ConfirmarInscripcion(){
@@ -42,13 +40,15 @@
     {% if curso.inscripcion_abierta %}
         <tr><td><input type="radio" name="curso" value="{{curso.id}}" checked><b><label id="{{curso.id}}">{{ curso }}</label></b></input></td><td>{{ curso.curso.descripcion }}</td></tr>
 
-        <tr><td></td><td>Costo inscripción en $ (pesos argentinos): {{curso.costo_inscripcion_pesos}}</td></tr>
-        <tr><td></td><td>Valor cuota en $ (pesos argentinos): {{curso.valor_cuota_pesos}}</td></tr>
-        <tr><td></td><td>Costo certificado en $ (pesos argentinos): {{curso.costo_certificado_pesos}}</td></tr>
-
-        <tr><td></td><td>Costo inscripción en u$s (dólares): {{curso.costo_inscripcion_dolares}}</td></tr>
-        <tr><td></td><td>Valor cuota en u$s (dólares): {{curso.valor_cuota_dolares}}</td></tr>
-        <tr><td></td><td>Costo certificado en u$s (dólares): {{curso.costo_certificado_dolares}}</td></tr>
+        {% if es_Argentino %}
+            <tr><td></td><td>Costo inscripción en $ (pesos argentinos): {{curso.costo_inscripcion_pesos}}</td></tr>
+            <tr><td></td><td>Valor cuota en $ (pesos argentinos): {{curso.valor_cuota_pesos}}</td></tr>
+            <tr><td></td><td>Costo certificado en $ (pesos argentinos): {{curso.costo_certificado_pesos}}</td></tr>
+        {% else %}
+            <tr><td></td><td>Costo inscripción en u$s (dólares): {{curso.costo_inscripcion_dolares}}</td></tr>
+            <tr><td></td><td>Valor cuota en u$s (dólares): {{curso.valor_cuota_dolares}}</td></tr>
+            <tr><td></td><td>Costo certificado en u$s (dólares): {{curso.costo_certificado_dolares}}</td></tr>
+        {% endif %}
 
         <tr><td></td><td>Cantidad de cuotas: {{curso.duracion}}</td></tr>
     {% endif %}
@@ -99,6 +99,7 @@ Estado de cuotas
         <tr>
         <td>Curso: {{cuota.cursado}}</td>
         <td>Cuota nº: {{cuota.numero}}</td>
+        <td>Valor: ${{cuota.valor_cuota_pesos}}</td>
         {% if cuota.pagado == False%}
             <td>Cuota aún no abonada.</td>
             <td><input type="radio" name="cuota" value="{{cuota.id}}" checked></td>
