@@ -222,35 +222,23 @@ def generar_cupon(request):
                 importe + anio_vencimiento + mes_vencimiento + dia_vencimiento + \
                 reservado + digito_verificador
 
-
     # Nombre del archivo
-    cupon = "Nombrecupon"
+    cupon = "Cupon"
     response['Content-Disposition'] = 'filename="%s".pdf' %(cupon)
 
     doc = SimpleDocTemplate(response, pagesize=A4)
     elements = []
     styles = getSampleStyleSheet()
 
-    # Título
-    titulo1 = Paragraph("SEMINARIO VILLA CLARET", styles["Heading2"])
-    titulo2 = Paragraph("CEFyT - Centro de Estudios Filosóficos y Teológicos", styles["Heading5"])
-    elements.append(titulo1)
-    elements.append(titulo2)
-
-    # Datos
-    direccion = Paragraph("Av. Padre Claret 5601", styles["Normal"])
-    elements.append(direccion)
-
-    barrio = Paragraph("Bº Padre Claret", styles["Normal"])
-    elements.append(barrio)
-
-    localidad = Paragraph("X5022LJQ Córdoba, República Argentina", styles["Normal"])
-    elements.append(localidad)
-
-    cuit = Paragraph("C.U.I.T.: 30-67870110-2", styles["Normal"])
-    elements.append(cuit)
+    # Imagen
+    logo = Image('.\sia\static\sia\cupon\logo.png')
+    logo.drawHeight = 1.40*25.4*mm*logo.drawHeight / logo.drawWidth
+    logo.drawWidth = 1.40*25.4*mm
 
     # Datos del cupón
+    titulo1 = Paragraph("SEMINARIO VILLA CLARET", styles["Heading2"])
+    titulo2 = Paragraph("CEFyT - Centro de Estudios Filosóficos y Teológicos", styles["Heading5"])
+
     apellido = alumno.usuario.last_name
     nombre = alumno.usuario.first_name
 
@@ -263,37 +251,48 @@ def generar_cupon(request):
     cursado = "Curso " + cuota.cursado.nombre
     valor_cuota = "$" + cupon_valor
 
-    info_cupon = [ ['Señor/a:', apellido + ', ' + nombre],
-                   ['Domicilio:', domicilio + ', ' + localidad + ', ' + provincia + ', ' + pais],
-                   ['En concepto de:', nro_cuota + ', ' + cursado],
-                   ['Total a pagar:', valor_cuota],
-                 ]
-    t = Table(info_cupon)
-    t.setStyle(TableStyle([('FONTNAME',(0,0),(-1,-1),'Helvetica'),
-                           ('FONTNAME',(0,0),(0,-1),'Helvetica-Bold'),
-                          ]))
-
-    elements.append(t)
-
-
     # Código barras
     tb=0.254320987654 * mm # thin bar
     bh=20 * mm # bar height
-    bcl=90 * mm # barcode length
-    bc=I2of5(nro_cupon,barWidth=tb,ratio=3,barHeight=bh,bearers=0,quiet=0,checksum=1)
-    elements.append(bc)
+    bc=I2of5(nro_cupon, barWidth=tb, ratio=3, barHeight=bh, bearers=0, quiet=0, checksum=1)
 
-    digitos_cupon = Paragraph(nro_cupon, styles["Normal"])
-    elements.append(digitos_cupon)
+    datos = [[logo, titulo1],
+             ['', titulo2],
+             ['', "Av. Padre Claret 5601"],
+             ['', "Bº Padre Claret"],
+             ['', "X5022LJQ Córdoba, República Argentina"],
+             ['', "C.U.I.T.: 30-67870110-2"],
+             [],
+             ['Señor/a:', apellido + ', ' + nombre],
+             ['Domicilio:', domicilio + ', ' + localidad + ', ' + provincia + ', ' + pais],
+             ['En concepto de:', nro_cuota + ', ' + cursado],
+             ['Total a pagar:', valor_cuota],
+             [],
+             [bc],
+             [nro_cupon]
+            ]
 
+    t = Table(datos)
+    t.setStyle(TableStyle([# Logo
+                           ('SPAN',(0,0),(0,-9)),
+                           ('ALIGN',(0,0),(0,0),'CENTER'),
+                           ('VALIGN',(0,0),(0,0),'CENTER'),
 
-    #digitos_cupon = nro_gire + ' ' + nro_cliente + ' ' + tipo_comprobante + ' ' + nro_comprobante + ' ' + \
-    #            importe + ' ' + anio_vencimiento + ' ' + mes_vencimiento + ' ' + dia_vencimiento + ' ' + \
-    #            reservado + ' ' + digito_verificador
-    #digitos_cupon = Paragraph(digitos_cupon, styles["Normal"])
-    #elements.append(digitos_cupon)
+                           ('FONTNAME',(0,0),(-1,-1),'Helvetica'),
+                           ('FONTNAME',(0,2), (0,-4),'Helvetica-Bold'),
 
+                           # Código de barras
+                           ('SPAN', (0,-2), (1,-2)),
+                           ('ALIGN', (0,-2), (1,-2), 'CENTER'),
 
+                           # Número de cupón
+                           ('SPAN', (0,-1), (1,-1)),
+                           ('ALIGN', (0,-1), (1,-1), 'CENTER'),
+
+                           ('GRID', (0, 0), (-1,-1), 1, colors.gray),
+                          ]))
+
+    elements.append(t)
     doc.build(elements)
 
     return response
