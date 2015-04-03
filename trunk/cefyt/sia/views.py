@@ -231,7 +231,7 @@ def generar_cupon(request):
     styles = getSampleStyleSheet()
 
     # Imagen
-    logo = Image('.\sia\static\sia\cupon\logo.png')
+    logo = Image('./sia/static/sia/cupon/logo.png')
     logo.drawHeight = 1.40*25.4*mm*logo.drawHeight / logo.drawWidth
     logo.drawWidth = 1.40*25.4*mm
 
@@ -247,7 +247,7 @@ def generar_cupon(request):
     provincia = alumno.provincia
     pais = alumno.pais.nombre
 
-    nro_cuota = "Cuota nº " + str(cuota.numero)
+    nro_cuota = "Cuota numero " + str(cuota.numero)
     cursado = "Curso " + cuota.cursado.nombre
     valor_cuota = "$" + cupon_valor
 
