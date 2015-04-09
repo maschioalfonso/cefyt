@@ -50,25 +50,25 @@ def cuenta(request):
             # Generación de cuotas
             cantidad_cuotas = cursado.duracion
             for i in range(1, cantidad_cuotas + 1):
-                cuota = Cuota(alumno=alumno,
-                              cursado=cursado,
-                              numero=i,
-                              costo_certificado_dolares = 0,
-                              costo_certificado_pesos = 0,
-                              valor_cuota_pesos = cursado.valor_cuota_pesos,
-                              valor_cuota_dolares = cursado.valor_cuota_dolares
-                        )
+                cuota = Cuota(
+                    alumno=alumno,
+                    cursado=cursado,
+                    numero=i,
+                    costo_certificado_dolares=0,
+                    costo_certificado_pesos=0,
+                    valor_cuota_pesos=cursado.valor_cuota_pesos,
+                    valor_cuota_dolares=cursado.valor_cuota_dolares)
                 cuota.save()
 
             # Costo certificado
-            cuota_certificado = Cuota(alumno=alumno,
-                                    cursado=cursado,
-                                    numero=cantidad_cuotas + 1,
-                                    costo_certificado_dolares = cursado.costo_certificado_dolares,
-                                    costo_certificado_pesos = cursado.costo_certificado_pesos,
-                                    valor_cuota_pesos = 0,
-                                    valor_cuota_dolares = 0
-                                )
+            cuota_certificado = Cuota(
+              alumno=alumno,
+              cursado=cursado,
+              numero=cantidad_cuotas + 1,
+              costo_certificado_dolares=cursado.costo_certificado_dolares,
+              costo_certificado_pesos=cursado.costo_certificado_pesos,
+              valor_cuota_pesos=0,
+              valor_cuota_dolares=0)
             cuota_certificado.save()
 
         if opciones_descubrimiento:
@@ -79,11 +79,10 @@ def cuenta(request):
         return redirect("sia:cuenta")
 
     context = {'lista_cursados': cursados,
-               'es_Argentino' : es_Argentino,
-               'lista_cursados_inscripto' : cursados_inscripto,
-               'opcion_descubrimiento' : opciones_descubrimiento,
-               'lista_cuotas' : lista_cuotas
-              }
+               'es_Argentino': es_Argentino,
+               'lista_cursados_inscripto': cursados_inscripto,
+               'opcion_descubrimiento': opciones_descubrimiento,
+               'lista_cuotas': lista_cuotas}
     return render(request, 'sia/cuenta.html', context)
 
 
@@ -98,7 +97,7 @@ def registro(request):
         form = RegistroForm(request.POST)
         if form.is_valid():
 
-            usuario,creado = User.objects.get_or_create(
+            usuario, creado = User.objects.get_or_create(
                 username=request.POST.get('email'),
                 first_name=form.cleaned_data.get('nombre'),
                 last_name=form.cleaned_data.get('apellido'),
@@ -122,15 +121,14 @@ def registro(request):
                   )
                 usuario = authenticate(username=usuario.username, password=request.POST.get('password'))
                 login(request, usuario)
-                #import ipdb; ipdb.set_trace()
+                # import ipdb; ipdb.set_trace()
                 return redirect("sia:cuenta")
 
-
     context = {'form': form,
-               'usuario_existente' : usuario_existente,
-              }
+               'usuario_existente': usuario_existente}
 
     return render(request, 'sia/registro.html', context)
+
 
 def generar_reporte(request):
     if not request.user.is_superuser:
@@ -148,7 +146,7 @@ def generar_reporte(request):
 
 def generar_pdf(cursado):
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="%s".pdf' %(cursado.nombre)
+    response['Content-Disposition'] = 'filename="%s".pdf' % (cursado.nombre)
 
     doc = SimpleDocTemplate(response, pagesize=A4)
     elements = []
@@ -184,10 +182,10 @@ def generar_pdf(cursado):
     # Tabla de alumnos
     datos = alumnos
     t = Table(datos)
-    t.setStyle(TableStyle([('BACKGROUND', (0,0),(6,0), colors.lavender),
-                           ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
-                           ('BOX', (0,0), (-1,-1), 0.25, colors.black),
-                          ]))
+    t.setStyle(TableStyle(
+        [('BACKGROUND', (0, 0), (6, 0), colors.lavender),
+        ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+        ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
     elements.append(t)
 
     # write the document to disk
@@ -211,16 +209,17 @@ def generar_cupon(request):
     nro_cliente = "00001"       # Número de cliente: 5 dígitos
     tipo_comprobante = "1"      # Tipo de comprobante: 1 dígito
     nro_comprobante = "000001"  # Número de comprobante: 6 dígitos
-    importe = cupon_valor.replace(".", "")       # Importe: 4 parte entera, 2 parte decimal
+    importe = cupon_valor.replace(".", "") # Importe: 4 parte entera, 2 parte decimal
     anio_vencimiento = "15"     # Año vencimiento: 2 dígitos
     mes_vencimiento = "05"      # Mes vencimiento: 2 dígitos
     dia_vencimiento = "31"      # Día vencimiento: 2 dígitos
     reservado = "0"             # Espacio reservado
     digito_verificador = "9"    # Digito verificador
 
-    nro_cupon = nro_gire + nro_cliente + tipo_comprobante + nro_comprobante + \
-                importe + anio_vencimiento + mes_vencimiento + dia_vencimiento + \
-                reservado + digito_verificador
+    nro_cupon = nro_gire + nro_cliente + tipo_comprobante +\
+                nro_comprobante + importe + anio_vencimiento +\
+                mes_vencimiento + dia_vencimiento + reservado +\
+                digito_verificador
 
     # Nombre del archivo
     cupon = "Cupon"
@@ -254,7 +253,9 @@ def generar_cupon(request):
     # Código barras
     tb=0.254320987654 * mm # thin bar
     bh=20 * mm # bar height
-    bc=I2of5(nro_cupon, barWidth=tb, ratio=3, barHeight=bh, bearers=0, quiet=0, checksum=1)
+    bc=I2of5(
+      nro_cupon, barWidth=tb, ratio=3, barHeight=bh, bearers=0, 
+      quiet=0, checksum=1)
 
     datos = [[logo, titulo1],
              ['', titulo2],
@@ -274,22 +275,22 @@ def generar_cupon(request):
 
     t = Table(datos)
     t.setStyle(TableStyle([# Logo
-                           ('SPAN',(0,0),(0,-9)),
-                           ('ALIGN',(0,0),(0,0),'CENTER'),
-                           ('VALIGN',(0,0),(0,0),'CENTER'),
+                           ('SPAN', (0, 0), (0, -9)),
+                           ('ALIGN', (0, 0), (0, 0), 'CENTER'),
+                           ('VALIGN', (0, 0), (0, 0), 'CENTER'),
 
-                           ('FONTNAME',(0,0),(-1,-1),'Helvetica'),
-                           ('FONTNAME',(0,2), (0,-4),'Helvetica-Bold'),
+                           ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+                           ('FONTNAME', (0, 2), (0, -4), 'Helvetica-Bold'),
 
                            # Código de barras
-                           ('SPAN', (0,-2), (1,-2)),
-                           ('ALIGN', (0,-2), (1,-2), 'CENTER'),
+                           ('SPAN', (0, -2), (1, -2)),
+                           ('ALIGN', (0, -2), (1, -2), 'CENTER'),
 
                            # Número de cupón
-                           ('SPAN', (0,-1), (1,-1)),
-                           ('ALIGN', (0,-1), (1,-1), 'CENTER'),
+                           ('SPAN', (0, -1), (1, -1)),
+                           ('ALIGN', (0, -1), (1, -1), 'CENTER'),
 
-                           ('GRID', (0, 0), (-1,-1), 1, colors.gray),
+                           ('GRID', (0, 0), (-1, -1), 1, colors.gray),
                           ]))
 
     elements.append(t)
@@ -297,4 +298,5 @@ def generar_cupon(request):
 
     return response
 
-# BUG: Si se registra, intenta inscribirse a un curso y pone cancelar al cartel de advertencia.
+# BUG: Si se registra, intenta inscribirse a un curso y
+# pone cancelar al cartel de advertencia.
