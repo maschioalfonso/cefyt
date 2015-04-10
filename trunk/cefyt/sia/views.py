@@ -130,6 +130,12 @@ def registro(request):
     return render(request, 'sia/registro.html', context)
 
 
+@login_required
+def listado_cuotas(request):
+    context = {}
+    return render(request, 'sia/listado_cuotas.html', context)
+
+
 def generar_reporte(request):
     if not request.user.is_superuser:
         return redirect("sia:cuenta")
@@ -179,16 +185,15 @@ def generar_pdf(cursado):
     linea_vacia = Paragraph(".", styles["Normal"])
     elements.append(linea_vacia)
 
-    # Tabla de alumnos
-    datos = alumnos
-    t = Table(datos)
-    t.setStyle(TableStyle(
-        [('BACKGROUND', (0, 0), (6, 0), colors.lavender),
-        ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-        ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
-    elements.append(t)
+    if cantidad_inscriptos > 0:
+        # Tabla de alumnos
+        t = Table(alumnos)
+        t.setStyle(TableStyle(
+            [('BACKGROUND', (0, 0), (6, 0), colors.lavender),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+        elements.append(t)
 
-    # write the document to disk
     doc.build(elements)
 
     return response

@@ -72,19 +72,20 @@
 
 
 <!-- Cursos inscriptos -->
-<table>
-    {% if lista_cursados_inscripto %}
-        <h1>Actualmente estás registrado a los siguientes cursos:<h1>
-    {% endif %}
+{% if lista_cursados_inscripto %}
+    <h1>Actualmente estás registrado a los siguientes cursos:</h1>
+    <table>
     {% for curso in lista_cursados_inscripto %}
-        <tr><td><h4>{{curso}}</h4></td></tr>
+        <td><h4>{{curso.nombre}}</h4></td>
     {% endfor %}
-</table>
+    </table>
+    <a href="/sia/listado_cuotas/">Ver estado de cuotas</a>
+{% endif %}
 
 </form>
 
 <!-- Listado de cuotas -->
-<form action="{% url 'sia:generar_cupon' %}" method="POST">
+<!-- <form action="{% url 'sia:generar_cupon' %}" method="POST">
 {% csrf_token %}
 <br>
 <h1>Estado de cuotas</h1>
@@ -110,7 +111,6 @@
     {% endfor %}
 </table>
 <input type="submit" value="Generar comprobante" class="input">
-</form>
-
+</form> -->
 </div>
 {% endblock %}
