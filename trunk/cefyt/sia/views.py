@@ -19,7 +19,14 @@ from sia.forms import RegistroForm
 
 import time
 
-TITULO_REPORTE = "CEFyT - Centro de Estudios Filosóficos y Teológicos"
+NOMBRE_CEFYT = "CEFyT - Centro de Estudios Filosóficos y Teológicos"
+DOMICILIO_CEFYT = "Av. Padre Claret 5601"
+BARRIO_CEFYT = "Bº Padre Claret"
+CUIT_CEFYT = "C.U.I.T.: 30-67870110-2"
+CODPOSTAL_CEFYT = "X5022LJQ"
+LOCALIDAD_CEFYT = "Córdoba"
+PAIS_CEFYT = "Argentina"
+
 
 
 @login_required
@@ -49,7 +56,7 @@ def cuenta(request):
             # Generación de cuotas
             cantidad_cuotas = cursado.duracion
             for i in range(1, cantidad_cuotas + 1):
-                cuota = Cuota(
+                Cuota.objects.create(
                     alumno=alumno,
                     cursado=cursado,
                     numero=i,
@@ -57,10 +64,9 @@ def cuenta(request):
                     costo_certificado_pesos=0,
                     valor_cuota_pesos=cursado.valor_cuota_pesos,
                     valor_cuota_dolares=cursado.valor_cuota_dolares)
-                cuota.save()
 
             # Costo certificado
-            cuota_certificado = Cuota(
+            Cuota.objects.create(
                 alumno=alumno,
                 cursado=cursado,
                 numero=cantidad_cuotas + 1,
@@ -68,16 +74,15 @@ def cuenta(request):
                 costo_certificado_pesos=cursado.costo_certificado_pesos,
                 valor_cuota_pesos=0,
                 valor_cuota_dolares=0)
-            cuota_certificado.save()
 
         if opciones_descubrimiento:
             opcion = DescubrimientoOpcion.objects.get(
                 id=request.POST.get('descubrimiento'))
-            descubrimiento_curso = DescubrimientoCurso(
+
+            DescubrimientoCurso.objects.create(
                 cursada=cursado,
                 alumno=alumno,
                 opcion=opcion)
-            descubrimiento_curso.save()
 
         return redirect("sia:cuenta")
 
@@ -120,11 +125,12 @@ def registro(request):
                     domicilio=form.cleaned_data.get('domicilio'),
                     telefono=form.cleaned_data.get('telefono'),
                     telefono_alter=form.cleaned_data.get('telefono_alter'))
+
                 usuario = authenticate(
                     username=usuario.username,
                     password=request.POST.get('password'))
                 login(request, usuario)
-                # import ipdb; ipdb.set_trace()
+
                 return redirect("sia:cuenta")
 
     context = {'form': form,
@@ -168,7 +174,7 @@ def generar_pdf(cursado):
     styles = getSampleStyleSheet()
 
     # Titulo página
-    titulo = Paragraph(TITULO_REPORTE, styles["Heading2"])
+    titulo = Paragraph(NOMBRE_CEFYT, styles["Heading2"])
     elements.append(titulo)
 
     # Cursado
@@ -247,7 +253,7 @@ def generar_cupon(request):
 
     # Datos del cupón
     titulo1 = Paragraph("SEMINARIO VILLA CLARET", styles["Heading2"])
-    titulo2 = Paragraph("CEFyT - Centro de Estudios Filosóficos y Teológicos", styles["Heading5"])
+    titulo2 = Paragraph(NOMBRE_CEFYT, styles["Heading5"])
 
     apellido = alumno.usuario.last_name
     nombre = alumno.usuario.first_name
@@ -270,10 +276,10 @@ def generar_cupon(request):
 
     datos = [[logo, titulo1],
              ['', titulo2],
-             ['', "Av. Padre Claret 5601"],
-             ['', "Bº Padre Claret"],
-             ['', "X5022LJQ Córdoba, República Argentina"],
-             ['', "C.U.I.T.: 30-67870110-2"],
+             ['', DOMICILIO_CEFYT + "."],
+             ['', BARRIO_CEFYT + "."],
+             ['', CODPOSTAL_CEFYT + ". " + LOCALIDAD_CEFYT + ", " + PAIS_CEFYT + "."],
+             ['', CUIT_CEFYT  + "."],
              [],
              ['Señor/a:', apellido + ', ' + nombre],
              ['Domicilio:', domicilio + ', ' + localidad + ', ' + provincia + ', ' + pais],
