@@ -35,7 +35,6 @@ def cuenta(request):
 
     cursados = Cursado.objects.filter(inscripcion_abierta=True).exclude(alumno=alumno)
     cursados_inscripto = Cursado.objects.filter(alumno=alumno)
-    lista_cuotas = Cuota.objects.filter(alumno=alumno)
 
     opciones_descubrimiento = DescubrimientoOpcion.objects.all()
 
@@ -81,8 +80,7 @@ def cuenta(request):
     context = {'lista_cursados': cursados,
                'es_Argentino': es_Argentino,
                'lista_cursados_inscripto': cursados_inscripto,
-               'opcion_descubrimiento': opciones_descubrimiento,
-               'lista_cuotas': lista_cuotas}
+               'opcion_descubrimiento': opciones_descubrimiento}
     return render(request, 'sia/cuenta.html', context)
 
 
@@ -132,7 +130,12 @@ def registro(request):
 
 @login_required
 def listado_cuotas(request):
-    context = {}
+
+    usuario = User.objects.get(username=request.user.username)
+    alumno = Alumno.objects.get(usuario=usuario)
+    lista_cuotas = Cuota.objects.filter(alumno=alumno)
+
+    context = {'lista_cuotas': lista_cuotas}
     return render(request, 'sia/listado_cuotas.html', context)
 
 

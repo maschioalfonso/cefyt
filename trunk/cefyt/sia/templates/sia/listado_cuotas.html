@@ -1,6 +1,33 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
 <div id="content-main">
-Estado de cuotas
+
+<br>
+<h1>Estado de cuotas</h1>
+<br>
+<br>
+<table>
+<form action="{% url 'sia:generar_cupon' %}" method="POST">
+{% csrf_token %}
+    {% if not lista_cuotas %}
+        Aún no tienes ninguna cuota abonada.
+    {% endif %}
+    {% for cuota in lista_cuotas %}
+        <tr>
+        <td>Curso: {{cuota.cursado}}</td>
+        <td>Cuota nº: {{cuota.numero}}</td>
+        <td>Valor: ${{cuota.valor_cuota_pesos}}</td>
+        {% if cuota.pagado == False%}
+            <td>Cuota aún no abonada.</td>
+            <td><input type="radio" name="cuota" value="{{cuota.id}}" checked></td>
+        {% else %}
+            <td>Pagada el: {{cuota.fecha_de_pago}}</td>
+            <td>Número de comprobante: {{cuota.comprobante}}</td>
+        {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+<input type="submit" value="Generar comprobante" class="input">
+</form>
 </div>
 {% endblock %}
