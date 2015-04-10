@@ -16,7 +16,8 @@ class Pais(models.Model):
 
 class Alumno(models.Model):
     usuario = models.OneToOneField(User)
-    usuario_aula_virtual = models.CharField(max_length=MAX_LENGTH)
+    usuario_aula_virtual = models.CharField(
+        max_length=MAX_LENGTH, blank=True, null=True)
     documento = models.CharField(max_length=MAX_LENGTH)
     fecha_de_nacimiento = models.DateField()
     pais = models.ForeignKey("Pais")
