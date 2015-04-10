@@ -102,7 +102,7 @@ class DescubrimientoCurso(models.Model):
 
     def __str__(self):
         return self.alumno.usuario.username + ' - ' + \
-               self.cursada.nombre + '-> ' + self.opcion.opcion
+            self.cursada.nombre + '-> ' + self.opcion.opcion
 
 
 class Cuota(models.Model):
@@ -126,4 +126,4 @@ class Cuota(models.Model):
 
     def __str__(self):
         return self.alumno.usuario.first_name + ': ' +\
-               self.cursado.nombre + ' - ' + 'Cuota: ' + str(self.numero)
+            self.cursado.nombre + ' - ' + 'Cuota: ' + str(self.numero)

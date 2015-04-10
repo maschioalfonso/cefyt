@@ -14,7 +14,6 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.platypus import *
 
-
 from sia.models import Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota
 from sia.forms import RegistroForm
 
@@ -62,13 +61,13 @@ def cuenta(request):
 
             # Costo certificado
             cuota_certificado = Cuota(
-              alumno=alumno,
-              cursado=cursado,
-              numero=cantidad_cuotas + 1,
-              costo_certificado_dolares=cursado.costo_certificado_dolares,
-              costo_certificado_pesos=cursado.costo_certificado_pesos,
-              valor_cuota_pesos=0,
-              valor_cuota_dolares=0)
+                alumno=alumno,
+                cursado=cursado,
+                numero=cantidad_cuotas + 1,
+                costo_certificado_dolares=cursado.costo_certificado_dolares,
+                costo_certificado_pesos=cursado.costo_certificado_pesos,
+                valor_cuota_pesos=0,
+                valor_cuota_dolares=0)
             cuota_certificado.save()
 
         if opciones_descubrimiento:
@@ -120,8 +119,7 @@ def registro(request):
                     localidad=form.cleaned_data.get('localidad'),
                     domicilio=form.cleaned_data.get('domicilio'),
                     telefono=form.cleaned_data.get('telefono'),
-                    telefono_alter=form.cleaned_data.get('telefono_alter')
-                  )
+                    telefono_alter=form.cleaned_data.get('telefono_alter'))
                 usuario = authenticate(
                     username=usuario.username,
                     password=request.POST.get('password'))
@@ -199,9 +197,9 @@ def generar_pdf(cursado):
         # Tabla de alumnos
         t = Table(alumnos)
         t.setStyle(TableStyle(
-                [('BACKGROUND', (0, 0), (6, 0), colors.lavender),
-                 ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
-                 ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+            [('BACKGROUND', (0, 0), (6, 0), colors.lavender),
+             ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+             ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
         elements.append(t)
 
     doc.build(elements)
@@ -287,23 +285,22 @@ def generar_cupon(request):
 
     t = Table(datos)
     t.setStyle(TableStyle([  # Logo
-                           ('SPAN', (0, 0), (0, -9)),
-                           ('ALIGN', (0, 0), (0, 0), 'CENTER'),
-                           ('VALIGN', (0, 0), (0, 0), 'CENTER'),
+        ('SPAN', (0, 0), (0, -9)),
+        ('ALIGN', (0, 0), (0, 0), 'CENTER'),
+        ('VALIGN', (0, 0), (0, 0), 'CENTER'),
 
-                           ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-                           ('FONTNAME', (0, 2), (0, -4), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTNAME', (0, 2), (0, -4), 'Helvetica-Bold'),
 
-                           # Código de barras
-                           ('SPAN', (0, -2), (1, -2)),
-                           ('ALIGN', (0, -2), (1, -2), 'CENTER'),
+        # Código de barras
+        ('SPAN', (0, -2), (1, -2)),
+        ('ALIGN', (0, -2), (1, -2), 'CENTER'),
 
-                           # Número de cupón
-                           ('SPAN', (0, -1), (1, -1)),
-                           ('ALIGN', (0, -1), (1, -1), 'CENTER'),
+        # Número de cupón
+        ('SPAN', (0, -1), (1, -1)),
+        ('ALIGN', (0, -1), (1, -1), 'CENTER'),
 
-                           ('GRID', (0, 0), (-1, -1), 1, colors.gray),
-                          ]))
+        ('GRID', (0, 0), (-1, -1), 1, colors.gray)]))
 
     elements.append(t)
     doc.build(elements)

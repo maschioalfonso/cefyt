@@ -3,16 +3,28 @@ from sia.models import Alumno, Pais, Materia, Curso, Cursado, Cuota, Descubrimie
 
 
 class AlumnoAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'documento', 'fecha_de_nacimiento', 'pais', 'provincia', 'localidad', 'domicilio', 'telefono', 'telefono_alter')
+    list_display = ('usuario', 'documento', 'fecha_de_nacimiento', 'pais',
+                    'provincia', 'localidad', 'domicilio', 'telefono',
+                    'telefono_alter')
+
 
 class CursoAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'descripcion')
 
+
 class CursadoAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'curso', 'duracion', 'costo_inscripcion_pesos', 'costo_inscripcion_dolares', 'costo_certificado_pesos', 'costo_certificado_dolares', 'valor_cuota_pesos', 'valor_cuota_dolares', 'inscripcion_abierta')
+    list_display = ('nombre', 'curso', 'duracion', 'costo_inscripcion_pesos',
+                    'costo_inscripcion_dolares', 'costo_certificado_pesos',
+                    'costo_certificado_dolares', 'valor_cuota_pesos',
+                    'valor_cuota_dolares', 'inscripcion_abierta')
+
 
 class CuotaAdmin(admin.ModelAdmin):
-    list_display = ('cursado', 'alumno', 'numero', 'valor_cuota_pesos', 'valor_cuota_dolares', 'costo_certificado_dolares', 'costo_certificado_pesos', 'fecha_de_pago', 'comprobante', 'pagado')
+    list_display = ('cursado', 'alumno', 'numero', 'valor_cuota_pesos',
+                    'valor_cuota_dolares', 'costo_certificado_dolares',
+                    'costo_certificado_pesos', 'fecha_de_pago',
+                    'comprobante', 'pagado')
+
 
 class DescubrimientoCursoAdmin(admin.ModelAdmin):
     list_display = ('cursada', 'alumno', 'opcion')

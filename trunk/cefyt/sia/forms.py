@@ -1,5 +1,4 @@
-from django.forms import ModelForm, PasswordInput, Form, EmailField, CharField, ModelChoiceField, TextInput, IntegerField
-from django.contrib.auth.models import User
+from django.forms import ModelForm, PasswordInput, EmailField, CharField, ModelChoiceField, IntegerField
 from sia.models import Alumno, Pais
 
 
@@ -8,10 +7,9 @@ class RegistroForm(ModelForm):
     apellido = CharField()
     email = EmailField(label="e-mail")
     documento = IntegerField(label='Documento', min_value=1)
-    password = CharField(widget=PasswordInput(),label="Contrasena")
+    password = CharField(widget=PasswordInput(), label="Contrasena")
     pais = ModelChoiceField(queryset=Pais.objects.all(), empty_label=None, label='Pais')
 
-    
     class Meta:
         model = Alumno
         exclude = ['usuario']
@@ -25,8 +23,7 @@ class RegistroForm(ModelForm):
                   'localidad',
                   'telefono',
                   'telefono_alter',
-                  'fecha_de_nacimiento',
-                 ]
+                  'fecha_de_nacimiento']
 
         labels = {'nombre': 'Nombre',
                   'apellido': 'Apellido',
@@ -36,5 +33,4 @@ class RegistroForm(ModelForm):
                   'localidad': 'Localidad',
                   'telefono': "Telefono",
                   'telefono_alter': 'Telefono alternativo',
-                  'fecha_de_nacimiento': 'Fecha de nacimiento',
-                 }
+                  'fecha_de_nacimiento': 'Fecha de nacimiento'}
