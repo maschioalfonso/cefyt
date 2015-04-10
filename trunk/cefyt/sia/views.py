@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth.views import logout
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
@@ -17,7 +15,7 @@ from reportlab.lib.units import mm
 from reportlab.platypus import *
 
 
-from sia.models import Pais, Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota
+from sia.models import Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota
 from sia.forms import RegistroForm
 
 import time
@@ -113,7 +111,7 @@ def registro(request):
             else:
                 usuario.set_password(request.POST.get('password'))
                 usuario.save()
-                alumno = Alumno.objects.create(
+                Alumno.objects.create(
                     usuario=usuario,
                     documento=form.cleaned_data.get('documento'),
                     pais=form.cleaned_data.get('pais'),

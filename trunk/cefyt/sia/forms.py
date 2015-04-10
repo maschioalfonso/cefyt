@@ -28,13 +28,13 @@ class RegistroForm(ModelForm):
                   'fecha_de_nacimiento',
                  ]
 
-        labels = {'nombre' : 'Nombre',
-                  'apellido' : 'Apellido',
-                  'documento' : 'Nro. de documento',
-                  'domicilio' : 'Domicilio',
-                  'provincia' : 'Provincia',
-                  'localidad' : 'Localidad',
-                  'telefono' : "Telefono",
-                  'telefono_alter' : 'Telefono alternativo',
-                  'fecha_de_nacimiento' : 'Fecha de nacimiento',
+        labels = {'nombre': 'Nombre',
+                  'apellido': 'Apellido',
+                  'documento': 'Nro. de documento',
+                  'domicilio': 'Domicilio',
+                  'provincia': 'Provincia',
+                  'localidad': 'Localidad',
+                  'telefono': "Telefono",
+                  'telefono_alter': 'Telefono alternativo',
+                  'fecha_de_nacimiento': 'Fecha de nacimiento',
                  }

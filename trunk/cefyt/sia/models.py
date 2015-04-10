@@ -1,26 +1,20 @@
 from django.db import models
-from django.db.models import IntegerField, Model
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 MAX_LENGTH = 255
 
 
 class Pais(models.Model):
+    nombre = models.CharField(unique=True, max_length=MAX_LENGTH)
 
     class Meta:
         verbose_name_plural = "Paises"
-
-    nombre = models.CharField(unique=True, max_length=MAX_LENGTH)
 
     def __str__(self):
         return self.nombre
 
 
 class Alumno(models.Model):
-
-    class Meta:
-        verbose_name_plural = "Alumnos"
-
     usuario = models.OneToOneField(User)
     usuario_aula_virtual = models.CharField(max_length=MAX_LENGTH)
     documento = models.CharField(max_length=MAX_LENGTH)
@@ -33,40 +27,37 @@ class Alumno(models.Model):
     telefono_alter = models.CharField(
         max_length=MAX_LENGTH, blank=True, null=True)
 
+    class Meta:
+        verbose_name_plural = "Alumnos"
+
     def __str__(self):
         return self.usuario.username
 
 
 class Materia(models.Model):
+    nombre = models.CharField(unique=True, max_length=MAX_LENGTH)
 
     class Meta:
         verbose_name_plural = "Materias"
-
-    nombre = models.CharField(unique=True, max_length=MAX_LENGTH)
 
     def __str__(self):
         return self.nombre
 
 
 class Curso(models.Model):
-
-    class Meta:
-        verbose_name_plural = "Cursos"
-
     nombre = models.CharField(unique=True, max_length=MAX_LENGTH)
     materias = models.ManyToManyField(Materia)
     descripcion = models.CharField(
         max_length=MAX_LENGTH, blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "Cursos"
 
     def __str__(self):
         return self.nombre
 
 
 class Cursado(models.Model):
-
-    class Meta:
-        verbose_name_plural = "Cursados"
-
     nombre = models.CharField(unique=True, max_length=MAX_LENGTH)
     curso = models.ForeignKey(Curso)
     alumno = models.ManyToManyField(Alumno, blank=True, null=True)
@@ -86,23 +77,24 @@ class Cursado(models.Model):
         decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     inscripcion_abierta = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name_plural = "Cursados"
+
     def __str__(self):
         return self.nombre
 
 
 class DescubrimientoOpcion(models.Model):
+    opcion = models.CharField(unique=True, max_length=MAX_LENGTH)
 
     class Meta:
         verbose_name_plural = "Descubrimiento opciones"
-
-    opcion = models.CharField(unique=True, max_length=MAX_LENGTH)
 
     def __str__(self):
         return self.opcion
 
 
 class DescubrimientoCurso(models.Model):
-
     cursada = models.ForeignKey(Cursado)
     alumno = models.ForeignKey(Alumno)
     opcion = models.ForeignKey(DescubrimientoOpcion)
