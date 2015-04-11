@@ -27,7 +27,9 @@
 </p>
 {% endfor %}
 {% endif %}
-
+<div id="content-main">
+<img src="{% static "sia/cupon/logo.png"%}" alt="Logo CEFyT" style="width:100%;height:100%;border:0">
+</div>
 <div id="content-main">
 <form action="{{ app_path }}" method="post" id="login-form">{% csrf_token %}
   <div class="form-row">
