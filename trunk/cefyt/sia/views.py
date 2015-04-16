@@ -224,7 +224,7 @@ def generar_cupon(request):
 
     # Generación del número cupón
     nro_gire = "4057"           # Valor fijo
-    nro_cliente = "00001"       # Número de cliente: 5 dígitos
+    nro_cliente = '{:5d}'.format(str(alumno.id)).replace(' ', '0')
     tipo_comprobante = "1"      # Tipo de comprobante: 1 dígito
     nro_comprobante = "000001"  # Número de comprobante: 6 dígitos
     importe = cupon_valor.replace(".", "")  # Importe: 4 entera, 2 decimal
