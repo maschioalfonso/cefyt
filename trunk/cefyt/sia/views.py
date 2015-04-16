@@ -224,10 +224,11 @@ def generar_cupon(request):
 
     # Generación del número cupón
     nro_gire = "4057"           # Valor fijo
-    nro_cliente = '{:5d}'.format(str(alumno.id)).replace(' ', '0')
+    nro_cliente = '{:5d}'.format(alumno.id).replace(' ', '0')
     tipo_comprobante = "1"      # Tipo de comprobante: 1 dígito
-    nro_comprobante = "000001"  # Número de comprobante: 6 dígitos
-    importe = cupon_valor.replace(".", "")  # Importe: 4 entera, 2 decimal
+    nro_comprobante ='{:6d}'.format(cuota.id).replace(' ', '0')
+    #importe = cupon_valor.replace(".", "")  # Importe: 4 entera, 2 decimal
+    importe = '{4:2f}'.format(cuota.valor_cuota_pesos).replace(' ', '0')
     anio_vencimiento = "15"     # Año vencimiento: 2 dígitos
     mes_vencimiento = "05"      # Mes vencimiento: 2 dígitos
     dia_vencimiento = "31"      # Día vencimiento: 2 dígitos
@@ -254,6 +255,7 @@ def generar_cupon(request):
     # Datos del cupón
     titulo1 = Paragraph("SEMINARIO VILLA CLARET", styles["Heading2"])
     titulo2 = Paragraph(NOMBRE_CEFYT, styles["Heading5"])
+    titulo2 = Paragraph(cuota.valor_cuota_pesos, styles["Heading5"])
 
     apellido = alumno.usuario.last_name
     nombre = alumno.usuario.first_name
