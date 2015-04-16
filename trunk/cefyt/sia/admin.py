@@ -8,6 +8,7 @@ class AlumnoAdmin(admin.ModelAdmin):
                     'telefono_alter')
     search_fields = ['id']
 
+
 class CursoAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'descripcion')
 
@@ -20,10 +21,11 @@ class CursadoAdmin(admin.ModelAdmin):
 
 
 class CuotaAdmin(admin.ModelAdmin):
-    list_display = ('cursado', 'alumno', 'numero', 'valor_cuota_pesos',
+    list_display = ('id', 'cursado', 'alumno', 'numero', 'valor_cuota_pesos',
                     'valor_cuota_dolares', 'costo_certificado_dolares',
                     'costo_certificado_pesos', 'fecha_de_pago',
                     'comprobante', 'pagado')
+    search_fields = ['id', 'alumno__usuario__username']
 
 
 class DescubrimientoCursoAdmin(admin.ModelAdmin):
