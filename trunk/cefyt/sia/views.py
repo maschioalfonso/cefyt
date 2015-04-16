@@ -247,7 +247,7 @@ def generar_cupon(request):
     styles = getSampleStyleSheet()
 
     # Imagen
-    logo = Image('./sia/static/sia/cupon/logo.png')
+    logo = Image('./sia/static/sia/cupon/logo.bmp')
     logo.drawHeight = 1.40*25.4*mm*logo.drawHeight / logo.drawWidth
     logo.drawWidth = 1.40*25.4*mm
 

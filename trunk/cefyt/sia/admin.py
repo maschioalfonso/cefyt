@@ -6,7 +6,7 @@ class AlumnoAdmin(admin.ModelAdmin):
     list_display = ('usuario', 'documento', 'fecha_de_nacimiento', 'pais',
                     'provincia', 'localidad', 'domicilio', 'telefono',
                     'telefono_alter')
-
+    search_fields = ['id']
 
 class CursoAdmin(admin.ModelAdmin):
     list_display = ('nombre', 'descripcion')
