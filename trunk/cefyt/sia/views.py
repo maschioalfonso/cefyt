@@ -21,6 +21,7 @@ from datetime import date
 
 import time
 
+
 NOMBRE_CEFYT = "CEFyT - Centro de Estudios Filosóficos y Teológicos"
 DOMICILIO_CEFYT = "Av. Padre Claret 5601"
 BARRIO_CEFYT = "Bº Padre Claret"
@@ -30,7 +31,19 @@ LOCALIDAD_CEFYT = "Córdoba"
 PAIS_CEFYT = "Argentina"
 
 
+def es_alumno(view):
+    def control_alumno(request):
+        usuario = User.objects.get(username=request.user.username)
+        try:
+            alumno = Alumno.objects.get(usuario=usuario)
+        except Alumno.DoesNotExist:
+            return redirect("/sia/")
 
+        return view(request)
+
+    return control_alumno
+
+#@es_alumno
 @login_required
 def cuenta(request):
     if request.method == "GET" and request.user.is_superuser:
@@ -229,12 +242,19 @@ def generar_cupon(request):
     nro_cliente = '{:5d}'.format(alumno.id).replace(' ', '0')
     tipo_comprobante = "1"      # Tipo de comprobante: 1 dígito
     nro_comprobante ='{:6d}'.format(cuota.id).replace(' ', '0')
-    importe = '{:7.2f}'.format(cuota.valor_cuota_pesos).translate(None, '.').replace(' ', '0')
+    importe = '{:7.2f}'.format(cuota.valor_cuota_pesos).replace('.', '').replace(' ', '0')
     anio_vencimiento = "31"     # Año vencimiento: 2 dígitos
     mes_vencimiento = "12"      # Mes vencimiento: 2 dígitos
     dia_vencimiento = str(date.today().year)      # Día vencimiento: 2 dígitos
     reservado = "0"             # Espacio reservado
     digito_verificador = "9"    # Digito verificador
+
+    lista_campos = [nro_gire, nro_cliente, tipo_comprobante, nro_comprobante, 
+                    importe, anio_vencimiento, mes_vencimiento, dia_vencimiento, 
+                    reservado, digito_verificador]
+
+    depuracion = ' '
+    depuracion = depuracion.join(lista_campos)
 
     nro_cupon = nro_gire + nro_cliente + tipo_comprobante + nro_comprobante +\
         importe + anio_vencimiento + mes_vencimiento + dia_vencimiento + \
@@ -311,6 +331,11 @@ def generar_cupon(request):
         ('GRID', (0, 0), (-1, -1), 1, colors.gray)]))
 
     elements.append(t)
+
+    d = Paragraph('Depuracion: ' + depuracion, styles["Heading5"])
+    elements.append(d)
+
+
     doc.build(elements)
 
     return response

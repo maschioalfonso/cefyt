@@ -54,7 +54,7 @@
 {% endfor %}
 </table>
 
-{% if lista_cursados %} <!-- TO DO: (BUG) Filtrar si lista_cursados tienen inscripciones abiertas -->
+{% if lista_cursados %}
     <!-- Lista de opciones de ¿Cómo conociste el curso? -->
     <br><br>Cómo conociste el curso?<br><br>
     <table>
@@ -73,7 +73,7 @@
 
 <!-- Cursos inscriptos -->
 {% if lista_cursados_inscripto %}
-    <h1>Actualmente estás registrado a los siguientes cursos:</h1>
+    <h3>Actualmente estás registrado a los siguientes cursos:</h3>
     <table>
     {% for curso in lista_cursados_inscripto %}
         <td><h4>{{curso.nombre}}</h4></td>
@@ -84,33 +84,5 @@
 
 </form>
 
-<!-- Listado de cuotas -->
-<!-- <form action="{% url 'sia:generar_cupon' %}" method="POST">
-{% csrf_token %}
-<br>
-<h1>Estado de cuotas</h1>
-<br>
-<br>
-<table>
-    {% if not lista_cuotas %}
-        Aún no tienes ninguna cuota abonada.
-    {% endif %}
-    {% for cuota in lista_cuotas %}
-        <tr>
-        <td>Curso: {{cuota.cursado}}</td>
-        <td>Cuota nº: {{cuota.numero}}</td>
-        <td>Valor: ${{cuota.valor_cuota_pesos}}</td>
-        {% if cuota.pagado == False%}
-            <td>Cuota aún no abonada.</td>
-            <td><input type="radio" name="cuota" value="{{cuota.id}}" checked></td>
-        {% else %}
-            <td>Pagada el: {{cuota.fecha_de_pago}}</td>
-            <td>Número de comprobante: {{cuota.comprobante}}</td>
-        {% endif %}
-        </tr>
-    {% endfor %}
-</table>
-<input type="submit" value="Generar comprobante" class="input">
-</form> -->
 </div>
 {% endblock %}
