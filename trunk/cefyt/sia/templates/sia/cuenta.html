@@ -40,13 +40,15 @@
         <tr><td><input type="radio" name="curso" value="{{curso.id}}" checked><b><label id="{{curso.id}}">{{ curso }}</label></b></input></td><td>{{ curso.curso.descripcion }}</td></tr>
 
         {% if es_Argentino %}
-            <tr><td></td><td>Costo inscripción en $ (pesos argentinos): {{curso.costo_inscripcion_pesos}}</td></tr>
-            <tr><td></td><td>Valor cuota en $ (pesos argentinos): {{curso.valor_cuota_pesos}}</td></tr>
-            <tr><td></td><td>Costo certificado en $ (pesos argentinos): {{curso.costo_certificado_pesos}}</td></tr>
+            <tr><td></td><td>Costo inscripción: ${{curso.costo_inscripcion_pesos}}</td></tr>
+            <tr><td></td><td>Valor cuota: ${{curso.valor_cuota_pesos}}</td></tr>
+            <tr><td></td><td>Costo certificado: ${{curso.costo_certificado_pesos}}</td></tr>
+            <tr><td></td><td>Valores expresados en $ (pesos argentinos)</td></tr>
         {% else %}
-            <tr><td></td><td>Costo inscripción en u$s (dólares): {{curso.costo_inscripcion_dolares}}</td></tr>
-            <tr><td></td><td>Valor cuota en u$s (dólares): {{curso.valor_cuota_dolares}}</td></tr>
-            <tr><td></td><td>Costo certificado en u$s (dólares): {{curso.costo_certificado_dolares}}</td></tr>
+            <tr><td></td><td>Costo inscripción: u$s{{curso.costo_inscripcion_dolares}}</td></tr>
+            <tr><td></td><td>Valor cuota: u$s{{curso.valor_cuota_dolares}}</td></tr>
+            <tr><td></td><td>Costo certificado: u$s{{curso.costo_certificado_dolares}}</td></tr>
+            <tr><td></td><td>Valores expresados en u$s (dólares)</td></tr>
         {% endif %}
 
         <tr><td></td><td>Cantidad de cuotas: {{curso.duracion}}</td></tr>
