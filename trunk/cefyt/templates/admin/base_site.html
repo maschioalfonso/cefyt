@@ -1,3 +1,5 @@
+
+
 {% extends "admin/base.html" %}
 
 {% block title %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
@@ -6,6 +8,11 @@
 <h1 id="site-name"><a href="{% url 'admin:index' %}">CEFyT - Centro de Estudios Filosóficos y Teológicos</a></h1>
 {% endblock %}
 
-
-
 {% block nav-global %}{% endblock %}
+{% block footer %}
+</div> 
+                    Desarrollado por <a href="mailto:marianitovlk@gmail.com"> Mariano Volarik</a> y <a href="mailto:alfonso.maschio@gmail.com"> Alfonso Maschio.</a>
+</div> 
+{% endblock %}
+
+
