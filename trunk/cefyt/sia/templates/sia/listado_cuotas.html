@@ -14,7 +14,12 @@
     {% for cuota in lista_cuotas %}
         <tr>
         <td>Curso: {{cuota.cursado}}</td>
-        <td>Cuota nº: {{cuota.numero}}</td>
+        {% if not cuota.es_certificado %}
+            <td>Cuota nº: {{cuota.numero}}</td>
+        {% else %}
+            <td>Certificado</td>
+        {% endif %}
+
         <td>Valor: ${{cuota.valor_cuota_pesos}}</td>
         {% if cuota.pagado == False%}
             <td>Cuota aún no abonada.</td>
