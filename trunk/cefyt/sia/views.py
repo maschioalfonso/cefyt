@@ -75,20 +75,18 @@ def cuenta(request):
                     alumno=alumno,
                     cursado=cursado,
                     numero=i,
-                    costo_certificado_dolares=0,
-                    costo_certificado_pesos=0,
                     valor_cuota_pesos=cursado.valor_cuota_pesos,
-                    valor_cuota_dolares=cursado.valor_cuota_dolares)
+                    valor_cuota_dolares=cursado.valor_cuota_dolares,
+                    es_certificado=False)
 
             # Costo certificado
             Cuota.objects.create(
                 alumno=alumno,
                 cursado=cursado,
                 numero=cantidad_cuotas + 1,
-                costo_certificado_dolares=cursado.costo_certificado_dolares,
-                costo_certificado_pesos=cursado.costo_certificado_pesos,
-                valor_cuota_pesos=0,
-                valor_cuota_dolares=0)
+                valor_cuota_pesos=cursado.costo_certificado_pesos,
+                valor_cuota_dolares=cursado.costo_certificado_dolares,
+                es_certificado=True)
 
         if opciones_descubrimiento:
             opcion = DescubrimientoOpcion.objects.get(

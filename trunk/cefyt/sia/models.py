@@ -115,14 +115,11 @@ class Cuota(models.Model):
     descripcion = models.CharField(
         max_length=MAX_LENGTH, blank=True, null=True)
     pagado = models.BooleanField(default=False)
-    costo_certificado_dolares = models.DecimalField(
-        decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
-    costo_certificado_pesos = models.DecimalField(
-        decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     valor_cuota_pesos = models.DecimalField(
         decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
     valor_cuota_dolares = models.DecimalField(
         decimal_places=2, max_digits=12, validators=[MinValueValidator(0)])
+    es_certificado = models.BooleanField(default=False)
 
     def __str__(self):
         return self.alumno.usuario.first_name + ': ' +\
