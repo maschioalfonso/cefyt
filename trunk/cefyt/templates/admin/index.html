@@ -43,6 +43,7 @@
         </table>
         </div>
     {% endfor %}
+    <b><a href="{% url 'sia:generar_reporte' %}">Generar reporte inscriptos</a></b>
 {% else %}
     <p>{% trans "You don't have permission to edit anything." %}</p>
 {% endif %}
@@ -79,6 +80,4 @@
             {% endif %}
     </div>
 </div>
-<b><a href="{% url 'sia:generar_reporte' %}">Generar reporte inscriptos</a></b>
-
 {% endblock %}
