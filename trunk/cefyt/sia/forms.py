@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from django.forms import ModelForm, PasswordInput, EmailField, CharField, ModelChoiceField, IntegerField
+from django.forms import (ModelForm, PasswordInput, EmailField, CharField,
+                          ModelChoiceField, IntegerField)
 from sia.models import Alumno, Pais
 
 
@@ -9,7 +10,8 @@ class RegistroForm(ModelForm):
     email = EmailField(label="Correo electrónico")
     documento = IntegerField(label='Documento', min_value=1)
     password = CharField(widget=PasswordInput(), label="Contraseña")
-    pais = ModelChoiceField(queryset=Pais.objects.all(), empty_label=None, label='País')
+    pais = ModelChoiceField(queryset=Pais.objects.all(),
+                            empty_label=None, label='País')
 
     class Meta:
         model = Alumno

@@ -14,7 +14,8 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.platypus import *
 
-from sia.models import Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota
+from sia.models import (Alumno, Cursado, DescubrimientoOpcion,
+                        DescubrimientoCurso, Cuota)
 from sia.forms import RegistroForm
 
 from datetime import date
@@ -35,7 +36,7 @@ def es_alumno(view):
     def control_alumno(request):
         usuario = User.objects.get(username=request.user.username)
         try:
-            alumno = Alumno.objects.get(usuario=usuario)
+            Alumno.objects.get(usuario=usuario)
         except Alumno.DoesNotExist:
             return redirect("/sia/")
 
@@ -43,7 +44,8 @@ def es_alumno(view):
 
     return control_alumno
 
-#@es_alumno
+
+# @es_alumno
 @login_required
 def cuenta(request):
     if request.method == "GET" and request.user.is_superuser:
@@ -132,7 +134,8 @@ def registro(request):
                     usuario=usuario,
                     documento=form.cleaned_data.get('documento'),
                     pais=form.cleaned_data.get('pais'),
-                    fecha_de_nacimiento=form.cleaned_data.get('fecha_de_nacimiento'),
+                    fecha_de_nacimiento=form.cleaned_data.get(
+                        'fecha_de_nacimiento'),
                     provincia=form.cleaned_data.get('provincia'),
                     localidad=form.cleaned_data.get('localidad'),
                     domicilio=form.cleaned_data.get('domicilio'),
@@ -201,7 +204,8 @@ def generar_pdf(cursado):
     # Listado de inscriptos
     cantidad_inscriptos = 0
     alumnos = []
-    alumnos.append(['Apellido', 'Nombre', 'Documento', 'País', 'Provincia', 'Localidad', 'Nombre de usuario'])
+    alumnos.append(['Apellido', 'Nombre', 'Documento',
+                    'País', 'Provincia', 'Localidad', 'Nombre de usuario'])
     for alumno in cursado.alumno.all():
         alumnos.append([alumno.usuario.last_name, alumno.usuario.first_name, alumno.documento, alumno.pais, alumno.provincia, alumno.localidad, alumno.usuario.username])
         cantidad_inscriptos = cantidad_inscriptos + 1

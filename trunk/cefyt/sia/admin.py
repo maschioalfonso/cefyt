@@ -1,5 +1,6 @@
 from django.contrib import admin
-from sia.models import Alumno, Pais, Materia, Curso, Cursado, Cuota, DescubrimientoOpcion, DescubrimientoCurso
+from sia.models import (Alumno, Pais, Materia, Curso, Cursado, Cuota,
+                        DescubrimientoOpcion, DescubrimientoCurso)
 
 
 class AlumnoAdmin(admin.ModelAdmin):
@@ -21,9 +22,9 @@ class CursadoAdmin(admin.ModelAdmin):
 
 
 class CuotaAdmin(admin.ModelAdmin):
-    list_display = ('alumno_id', 'id', 'cursado', 'alumno', 'numero', 'valor_cuota_pesos',
-                    'valor_cuota_dolares', 'es_certificado', 'fecha_de_pago',
-                    'comprobante', 'pagado')
+    list_display = ('alumno_id', 'id', 'cursado', 'alumno', 'numero',
+                    'valor_cuota_pesos', 'valor_cuota_dolares',
+                    'es_certificado', 'fecha_de_pago', 'comprobante', 'pagado')
 
     search_fields = ['id', 'alumno__usuario__username']
 
