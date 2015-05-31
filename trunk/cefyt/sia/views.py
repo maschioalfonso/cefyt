@@ -247,20 +247,31 @@ def generar_cupon(request):
     importe = '{:7.2f}'.format(cuota.valor_cuota_pesos).replace('.', '').replace(' ', '0')
     anio_vencimiento = "31"     # Año vencimiento: 2 dígitos
     mes_vencimiento = "12"      # Mes vencimiento: 2 dígitos
-    dia_vencimiento = str(date.today().year)      # Día vencimiento: 2 dígitos
+    dia_vencimiento = str(date.today().year)[2:]      # Día vencimiento: 2 dígitos
     reservado = "0"             # Espacio reservado
-    digito_verificador = "9"    # Digito verificador
 
+    nro_cupon = nro_gire + nro_cliente + tipo_comprobante + nro_comprobante +\
+        importe + anio_vencimiento + mes_vencimiento + dia_vencimiento + \
+        reservado
+    nro_cupon = str(nro_cupon)
+
+    SECUENCIA = "13579357935793579357935793579"
+
+    # Cálculo del dígito verificador
+    suma = 0
+    for i in range(len(nro_cupon)):
+        suma += int(nro_cupon[i]) + int(SECUENCIA[i])
+
+    digito_verificador = str(int(suma / 2) % 10)
+    nro_cupon += digito_verificador
+
+    # Depuración
     lista_campos = [nro_gire, nro_cliente, tipo_comprobante, nro_comprobante, 
                     importe, anio_vencimiento, mes_vencimiento, dia_vencimiento, 
                     reservado, digito_verificador]
 
     depuracion = ' '
     depuracion = depuracion.join(lista_campos)
-
-    nro_cupon = nro_gire + nro_cliente + tipo_comprobante + nro_comprobante +\
-        importe + anio_vencimiento + mes_vencimiento + dia_vencimiento + \
-        reservado + digito_verificador
 
     # Nombre del archivo
     cupon = "Cupon"
