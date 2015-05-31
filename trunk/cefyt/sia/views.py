@@ -245,24 +245,25 @@ def generar_cupon(request):
     tipo_comprobante = "1"      # Tipo de comprobante: 1 dígito
     nro_comprobante ='{:6d}'.format(cuota.id).replace(' ', '0')
     importe = '{:7.2f}'.format(cuota.valor_cuota_pesos).replace('.', '').replace(' ', '0')
-    anio_vencimiento = "31"     # Año vencimiento: 2 dígitos
+    anio_vencimiento = str(date.today().year)[2:]      # Año vencimiento: 2 dígitos
     mes_vencimiento = "12"      # Mes vencimiento: 2 dígitos
-    dia_vencimiento = str(date.today().year)[2:]      # Día vencimiento: 2 dígitos
+    dia_vencimiento = "31"      # Día vencimiento: 2 dígitos
     reservado = "0"             # Espacio reservado
 
     nro_cupon = nro_gire + nro_cliente + tipo_comprobante + nro_comprobante +\
-        importe + anio_vencimiento + mes_vencimiento + dia_vencimiento + \
+        importe + anio_vencimiento + mes_vencimiento + dia_vencimiento +\
         reservado
     nro_cupon = str(nro_cupon)
 
-    SECUENCIA = "13579357935793579357935793579"
 
     # Cálculo del dígito verificador
+    SECUENCIA = "13579357935793579357935793579"
     suma = 0
     for i in range(len(nro_cupon)):
-        suma += int(nro_cupon[i]) + int(SECUENCIA[i])
+        suma += int(nro_cupon[i]) * int(SECUENCIA[i])
 
-    digito_verificador = str(int(suma / 2) % 10)
+    digito_verificador = int(suma / 2) % 10
+    digito_verificador = str(digito_verificador)
     nro_cupon += digito_verificador
 
     # Depuración
