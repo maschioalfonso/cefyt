@@ -8,21 +8,21 @@
         var curso_seleccionado = 0;
         var cursos_abiertos = [];
         var curso_nombre = "";
-
+	var nam = document.form["mainform"]["name"];
         for (var i = 0, length = radios.length; i < length; i++) {
-            if (radios[i].checked) {
+           if (radios[i].checked) {
                 curso_seleccionado = radios[i].value;
             }
         }
         mensaje = '¿Estás seguro que deseas inscribirte al curso ';
-        curso_nombre = document.getElementById(curso_seleccionado).innerHTML;
+        curso_nombre =document.getElementById(curso_seleccionado).innerHTML;
 
         return confirm(mensaje + curso_nombre + "?");
     }
 </script>
 
 <div id="content-main">
-<form onsubmit=ConfirmarInscripcion() method="POST", action>
+<form onsubmit="return ConfirmarInscripcion()"  method="POST", id="mainform" , action=".">
 {% csrf_token %}
     <br>
     <tr><td><h1>Cursos disponibles</h1></td></tr>
