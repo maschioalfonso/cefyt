@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 from django.contrib import admin
 from sia.models import (Alumno, Pais, Materia, Curso, Cursado, Cuota,
                         DescubrimientoOpcion, DescubrimientoCurso)
