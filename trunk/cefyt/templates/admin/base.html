@@ -55,6 +55,15 @@
         {% endif %}
     {% endblock messages %}
 
+    {% block breadcrumbs %}
+            <ol class="breadcrumb">
+                <!-- <li><a href="{% url 'admin:index' %}">{% trans 'Home' %}</a></li> -->
+                <li>
+                    {% if title %} &rsaquo; {{ title }}{% endif %}
+                </li>
+            </ol>
+    {% endblock %}
+
     <!-- Content -->
     <div id="content" class="{% block coltype %}colM{% endblock %}">
         {% block pretitle %}{% endblock %}
