@@ -177,6 +177,7 @@ class Cuota(models.Model):
     valor_cuota_dolares = models.DecimalField(
         decimal_places=2, max_digits=12, validators=[MinValueValidator(0)],
         verbose_name='Valor cuota en dólares')
+    es_inscripcion = models.BooleanField(default=False, verbose_name='Es inscripción')
     es_certificado = models.BooleanField(default=False)
 
     def __str__(self):

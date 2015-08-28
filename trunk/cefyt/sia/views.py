@@ -70,6 +70,15 @@ def cuenta(request):
             cursado.alumno.add(alumno)
             cursado.save()
 
+            # Matrícula
+            Cuota.objects.create(
+                alumno=alumno,
+                cursado=cursado,
+                numero=0,
+                valor_cuota_pesos=cursado.costo_inscripcion_pesos,
+                valor_cuota_dolares=cursado.costo_inscripcion_dolares,
+                es_inscripcion=True)
+
             # Generación de cuotas
             cantidad_cuotas = cursado.duracion
             for i in range(1, cantidad_cuotas + 1):
@@ -78,8 +87,7 @@ def cuenta(request):
                     cursado=cursado,
                     numero=i,
                     valor_cuota_pesos=cursado.valor_cuota_pesos,
-                    valor_cuota_dolares=cursado.valor_cuota_dolares,
-                    es_certificado=False)
+                    valor_cuota_dolares=cursado.valor_cuota_dolares)
 
             # Costo certificado
             Cuota.objects.create(
@@ -299,7 +307,13 @@ def generar_cupon(request):
     provincia = alumno.provincia
     pais = alumno.pais.nombre
 
-    nro_cuota = "Cuota numero " + str(cuota.numero)
+    if cuota.es_inscripcion:
+        nro_cuota = "Inscripción "
+    elif cuota.es_certificado:
+        nro_cuota = "Certifcado "
+    else:
+        nro_cuota = "Cuota número " + str(cuota.numero)
+
     cursado = "Curso " + cuota.cursado.nombre
     valor_cuota = "$" + cupon_valor
 
@@ -319,7 +333,7 @@ def generar_cupon(request):
              [],
              ['Señor/a:', apellido + ', ' + nombre],
              ['Domicilio:', domicilio + ', ' + localidad + ', ' + provincia + ', ' + pais],
-             ['En concepto de:', nro_cuota + ', ' + cursado],
+             ['En concepto de:', nro_cuota + ' ' + cursado],
              ['Total a pagar:', valor_cuota],
              [],
              [bc],

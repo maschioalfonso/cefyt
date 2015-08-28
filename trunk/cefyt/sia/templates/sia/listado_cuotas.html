@@ -13,21 +13,23 @@
     {% endif %}
     {% for cuota in lista_cuotas %}
         <tr>
-        <td>Curso: {{cuota.cursado}}</td>
-        {% if not cuota.es_certificado %}
-            <td>Cuota nº: {{cuota.numero}}</td>
-        {% else %}
-            <td>Certificado</td>
-        {% endif %}
+            <td>Curso: {{cuota.cursado}}</td>
+            {% if cuota.es_inscripcion %}
+                <td>Inscripción</td>
+            {% elif cuota.es_certificado %}
+                <td>Certificado</td>
+            {% else %}
+                <td>Cuota nº: {{cuota.numero}}</td>
+            {% endif %}
 
-        <td>Valor: ${{cuota.valor_cuota_pesos}}</td>
-        {% if cuota.pagado == False%}
-            <td>Cuota aún no abonada.</td>
-            <td><input type="radio" name="cuota" value="{{cuota.id}}" checked></td>
-        {% else %}
-            <td>Pagada el: {{cuota.fecha_de_pago}}</td>
-            <td>Número de comprobante: {{cuota.comprobante}}</td>
-        {% endif %}
+            <td>Valor: ${{cuota.valor_cuota_pesos}}</td>
+            {% if cuota.pagado == False%}
+                <td>Cuota aún no abonada.</td>
+                <td><input type="radio" name="cuota" value="{{cuota.id}}" checked></td>
+            {% else %}
+                <td>Pagada el: {{cuota.fecha_de_pago}}</td>
+                <td>Número de comprobante: {{cuota.comprobante}}</td>
+            {% endif %}
         </tr>
     {% endfor %}
 </table>
