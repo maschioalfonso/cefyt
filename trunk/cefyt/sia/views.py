@@ -65,38 +65,11 @@ def cuenta(request):
     if request.method == "POST":
         if cursados:
 
-            # Inscripción
             cursado = Cursado.objects.get(id=request.POST.get('curso'))
-            cursado.alumno.add(alumno)
-            cursado.save()
 
-            # Matrícula
-            Cuota.objects.create(
-                alumno=alumno,
-                cursado=cursado,
-                numero=0,
-                valor_cuota_pesos=cursado.costo_inscripcion_pesos,
-                valor_cuota_dolares=cursado.costo_inscripcion_dolares,
-                es_inscripcion=True)
-
-            # Generación de cuotas
-            cantidad_cuotas = cursado.duracion
-            for i in range(1, cantidad_cuotas + 1):
-                Cuota.objects.create(
-                    alumno=alumno,
-                    cursado=cursado,
-                    numero=i,
-                    valor_cuota_pesos=cursado.valor_cuota_pesos,
-                    valor_cuota_dolares=cursado.valor_cuota_dolares)
-
-            # Costo certificado
-            Cuota.objects.create(
-                alumno=alumno,
-                cursado=cursado,
-                numero=cantidad_cuotas + 1,
-                valor_cuota_pesos=cursado.costo_certificado_pesos,
-                valor_cuota_dolares=cursado.costo_certificado_dolares,
-                es_certificado=True)
+            # Inscripción y generación de cuotas
+            inscribir_alumno(alumno, cursado)
+            generar_cuotas(alumno, cursado)
 
         if opciones_descubrimiento:
             opcion = DescubrimientoOpcion.objects.get(
@@ -173,7 +146,7 @@ def listado_cuotas(request):
     context = {'lista_cuotas': lista_cuotas}
     return render(request, 'sia/listado_cuotas.html', context)
 
-
+@login_required
 def generar_reporte(request):
     if not request.user.is_superuser:
         return redirect("sia:cuenta")
@@ -186,6 +159,42 @@ def generar_reporte(request):
 
     context = {'lista_cursados': cursados}
     return render(request, 'sia/generar_reporte.html', context)
+
+
+def inscribir_alumno(alumno, cursado):
+    cursado.alumno.add(alumno)
+    cursado.save()
+
+
+def generar_cuotas(alumno, cursado):
+
+    # Matrícula
+    Cuota.objects.create(
+        alumno=alumno,
+        cursado=cursado,
+        numero=0,
+        valor_cuota_pesos=cursado.costo_inscripcion_pesos,
+        valor_cuota_dolares=cursado.costo_inscripcion_dolares,
+        es_inscripcion=True)
+
+    # Generación de cuotas
+    cantidad_cuotas = cursado.duracion
+    for i in range(1, cantidad_cuotas + 1):
+        Cuota.objects.create(
+            alumno=alumno,
+            cursado=cursado,
+            numero=i,
+            valor_cuota_pesos=cursado.valor_cuota_pesos,
+            valor_cuota_dolares=cursado.valor_cuota_dolares)
+
+    # Costo certificado
+    Cuota.objects.create(
+        alumno=alumno,
+        cursado=cursado,
+        numero=cantidad_cuotas + 1,
+        valor_cuota_pesos=cursado.costo_certificado_pesos,
+        valor_cuota_dolares=cursado.costo_certificado_dolares,
+        es_certificado=True)
 
 
 def generar_pdf(cursado):
@@ -310,7 +319,7 @@ def generar_cupon(request):
     if cuota.es_inscripcion:
         nro_cuota = "Inscripción "
     elif cuota.es_certificado:
-        nro_cuota = "Certifcado "
+        nro_cuota = "Certificado "
     else:
         nro_cuota = "Cuota número " + str(cuota.numero)
 
