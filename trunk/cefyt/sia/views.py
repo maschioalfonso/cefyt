@@ -54,7 +54,7 @@ def cuenta(request):
     usuario = User.objects.get(username=request.user.username)
     alumno = Alumno.objects.get(usuario=usuario)
 
-    es_Argentino = alumno.pais.nombre == "Argentina"
+    alumno_es_argentino = es_argentino(alumno)
 
     cursados = Cursado.objects.filter(
         inscripcion_abierta=True).exclude(alumno=alumno)
@@ -83,7 +83,7 @@ def cuenta(request):
         return redirect("sia:cuenta")
 
     context = {'lista_cursados': cursados,
-               'es_Argentino': es_Argentino,
+               'alumno_es_argentino': alumno_es_argentino,
                'lista_cursados_inscripto': cursados_inscripto,
                'opcion_descubrimiento': opciones_descubrimiento}
     return render(request, 'sia/cuenta.html', context)
@@ -142,8 +142,12 @@ def listado_cuotas(request):
     usuario = User.objects.get(username=request.user.username)
     alumno = Alumno.objects.get(usuario=usuario)
     lista_cuotas = Cuota.objects.filter(alumno=alumno)
+    alumno_es_argentino = es_argentino(alumno)
 
-    context = {'lista_cuotas': lista_cuotas}
+    context = {'lista_cuotas': lista_cuotas,
+               'alumno_es_argentino': alumno_es_argentino,
+              }
+
     return render(request, 'sia/listado_cuotas.html', context)
 
 @login_required
@@ -195,6 +199,11 @@ def generar_cuotas(alumno, cursado):
         valor_cuota_pesos=cursado.costo_certificado_pesos,
         valor_cuota_dolares=cursado.costo_certificado_dolares,
         es_certificado=True)
+
+
+def es_argentino(alumno):
+    return alumno.pais.nombre in ["Argentina", "argentina"]
+
 
 
 def generar_pdf(cursado):

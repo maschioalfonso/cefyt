@@ -39,7 +39,7 @@
     {% if curso.inscripcion_abierta %}
         <tr><td><input type="radio" name="curso" value="{{curso.id}}" checked><b><label id="{{curso.id}}">{{ curso }}</label></b></input></td><td>{{ curso.curso.descripcion }}</td></tr>
 
-        {% if es_Argentino %}
+        {% if alumno_es_argentino %}
             <tr><td></td><td>Costo inscripción: ${{curso.costo_inscripcion_pesos}}</td></tr>
             <tr><td></td><td>Valor cuota: ${{curso.valor_cuota_pesos}}</td></tr>
             <tr><td></td><td>Costo certificado: ${{curso.costo_certificado_pesos}}</td></tr>

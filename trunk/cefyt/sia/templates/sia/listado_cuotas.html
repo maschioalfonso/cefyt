@@ -22,10 +22,17 @@
                 <td>Cuota nº: {{cuota.numero}}</td>
             {% endif %}
 
-            <td>Valor: ${{cuota.valor_cuota_pesos}}</td>
+            {% if alumno_es_argentino %}
+                <td>Valor: ${{cuota.valor_cuota_pesos}}</td>
+            {% else %}
+                <td>Valor: u$s{{cuota.valor_cuota_dolares}}</td>
+            {% endif %}
+
             {% if cuota.pagado == False%}
                 <td>Cuota aún no abonada.</td>
-                <td><input type="radio" name="cuota" value="{{cuota.id}}" checked></td>
+                {% if alumno_es_argentino %}
+                    <td><input type="radio" name="cuota" value="{{cuota.id}}" checked></td>
+                {% endif %}
             {% else %}
                 <td>Pagada el: {{cuota.fecha_de_pago}}</td>
                 <td>Número de comprobante: {{cuota.comprobante}}</td>
@@ -33,7 +40,11 @@
         </tr>
     {% endfor %}
 </table>
-<input type="submit" value="Generar comprobante" class="input">
+
+{% if alumno_es_argentino %}
+    <input type="submit" value="Generar comprobante" class="input">
+{% endif %}
+
 </form>
 </div>
 {% endblock %}
