@@ -93,8 +93,8 @@ Una vez registrado, ingresará a su cuenta utilizando el correo electrónico y l
 
 ## Inscripción ##
 En su cuenta, el alumno visualizará todos los *cursados* cuya opción 'Inscripción Abierta' está
-activada (ver Parametrización del sistema -> Cursado).<br>
-Podrá elegir un curso e inscribirse, seleccionando además cómo conoció el curso (ver Parametrización del sistema -> ¿Cómo conoció el curso?).
+activada (ver [Parametrización del sistema -> Cursado](#cursado)).<br>
+Podrá elegir un curso e inscribirse, seleccionando además cómo conoció el curso (ver [Parametrización del sistema -> ¿Cómo conoció el curso?](#cómo-conoció-el-curso)).
 
 Al inscribirse se generarán las cuotas para ese curso, y el alumno las podrá visualizar desde
 *Ver estado de cuotas*. Si el alumno reside en Argentina, además podrá generar el cupón de pago
