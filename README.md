@@ -17,7 +17,7 @@ Por ej.: el cursado 'Electrónica 2015 (primer semestre)'
 está basado en el curso 'Electrónica', y en éste dictado tiene un costo de $350, en cambio,
 el cursado 'Electrónica 2015 (segundo semestre)' tiene un costo de $450.
 
-De ésta forma no es necesario crea un curso en cada dictado, solamente se crea un nuevo cursado
+De ésta forma no es necesario crear un curso en cada dictado, solamente se crea un nuevo cursado
 indicando los nuevos valores.
 
 
