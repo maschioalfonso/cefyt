@@ -14,7 +14,7 @@ Un cursado está compuesto por un curso y además contiene
 información de los costos económicos.<br>
 Debe crearse un nuevo cursado por cada dictado de un curso.<br> 
 Por ej.: el cursado 'Electrónica 2015 (primer semestre)'
-está basado en el curso 'Electrónica', y en éste dictado tiene un costo de $350, en cambio,<br>
+está basado en el curso 'Electrónica', y en éste dictado tiene un costo de $350, en cambio,
 el cursado 'Electrónica 2015 (segundo semestre)' tiene un costo de $450.
 
 De ésta forma no es necesario crea un curso en cada dictado, solamente se crea un nuevo cursado
