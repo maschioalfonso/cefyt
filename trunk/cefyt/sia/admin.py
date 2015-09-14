@@ -5,7 +5,7 @@ from sia.models import (Alumno, Pais, Materia, Curso, Cursado, Cuota,
 
 
 class AlumnoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'usuario', 'documento', 'fecha_de_nacimiento',
+    list_display = ('usuario', 'id','documento', 'fecha_de_nacimiento',
                     'pais', 'provincia', 'localidad', 'domicilio', 'telefono',
                     'telefono_alter')
     search_fields = ['id']
@@ -23,7 +23,7 @@ class CursadoAdmin(admin.ModelAdmin):
 
 
 class CuotaAdmin(admin.ModelAdmin):
-    list_display = ('alumno_id', 'id', 'cursado', 'alumno', 'numero',
+    list_display = ('id', 'alumno_id', 'obtener_documento', 'cursado', 'alumno', 'numero',
                     'valor_cuota_pesos', 'valor_cuota_dolares',
                     'es_certificado', 'es_inscripcion', 'fecha_de_pago', 'comprobante', 'pagado')
 
@@ -31,6 +31,12 @@ class CuotaAdmin(admin.ModelAdmin):
 
     def alumno_id(self, instance):
         return instance.alumno.id
+
+    def obtener_documento(self, instance):
+        return instance.alumno.documento
+
+    obtener_documento.short_description = 'Documento'
+    obtener_documento.admin_order_field_ = 'alumno__documento'
 
 
 class DescubrimientoCursoAdmin(admin.ModelAdmin):
