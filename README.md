@@ -85,7 +85,7 @@ Cada alumno deberá registrarse al sistema ingresando los datos:
 * Localidad
 * Teléfono
 * Teléfono alternativo
-* Fecha de nacimiento
+* Fecha de nacimiento (Formato DD/MM/AAAA)
 * Correo electrónico
 * Contraseña
 
