@@ -1,4 +1,25 @@
-##Dictado de cursos##
+#Parametrización del sistema#
+Está sección detalla la parametrización del sistema que debe hacer un usuario Administrador.
+
+##Alta de cursos##
+Un *curso* es un conjunto de *materias* más una descripción opcional.
+Un *cursado* (o cohorte) es una entidad basada en un *curso* que además
+contiene información temporal y económica.
+
+Una materia puede ser usada en distintos cursos.<br>
+Por ej.: 'Matemática' puede formar parte tanto del curso 'Electrónica' como así también del 
+curso 'Arquitectura'. 
+
+Un cursado está compuesto por un curso y además contiene 
+información de los costos económicos.<br>
+Debe crearse un nuevo cursado por cada dictado de un curso.<br> 
+Por ej.: el cursado 'Electrónica 2015 (primer semestre)'
+está basado en el curso 'Electrónica', y en éste dictado tiene un costo de $350, en cambio,<br>
+el cursado 'Electrónica 2015 (segundo semestre)' tiene un costo de $450.
+
+De ésta forma no es necesario crea un curso en cada dictado, solamente se crea un nuevo cursado
+indicando los nuevos valores.
+
 
 #####Materias#####
 Las *materias* están compuestas por:
@@ -32,9 +53,6 @@ Los *cursados* están compuestos por:
 * Inscripción abierta: Si está tildado, éste cursado aparecerá 
   disponible para inscripción en las cuentas de los alumnos.
 
-###Ejemplo###
-To Do
-
 
 ##¿Cómo conoció el curso?##
 Un alumno al inscribirse a un curso, se le preguntará cómo conoció el curso. Las opciones
@@ -53,16 +71,31 @@ Al registrarse al sistema, un alumno deberá seleccionar su País de residencia.
 * Nombre.
  
 
+#Cuenta del alumno#
 
+## Registro ##
+Cada alumno deberá registrarse al sistema ingresando los datos:
 
+* Nombre
+* Apellido
+* Documento
+* Domicilio
+* País
+* Provincia
+* Localidad
+* Teléfono
+* Teléfono alternativo
+* Fecha de nacimiento
+* Correo electrónico
+* Contraseña
 
+Una vez registrado, ingresará a su cuenta utilizando el correo electrónico y la contraseña.
 
+## Inscripción ##
+En su cuenta, el alumno visualizará todos los *cursados* cuya opción 'Inscripción Abierta' está
+activada (ver Parametrización del sistema -> Cursado).<br>
+Podrá elegir un curso e inscribirse, seleccionando además cómo conoció el curso (ver Parametrización del sistema -> ¿Cómo conoció el curso?).
 
-
-###En construcción###
-####Crear, modificar, eliminar####
- 
-
-* Agregar: `admin->` **`<<nombre_modelo>>`** `->Agregar <<nombre_modelo>>`.
-* Modificar: en `admin->` **`<<nombre_modelo>>`** clickear en el modelo que desea modificar.
-* Borrar: en `admin->` **`<<nombre_modelo>>`** tildar el(los) modelo(s), seleccionar `Acción: Eliminar` **`<<nombre_modelo>>`** `seleccionados/as` y presionar `Ejecutar`.
+Al inscribirse se generarán las cuotas para ese curso, y el alumno las podrá visualizar desde
+*Ver estado de cuotas*. Si el alumno reside en Argentina, además podrá generar el cupón de pago
+para RapiPago.
