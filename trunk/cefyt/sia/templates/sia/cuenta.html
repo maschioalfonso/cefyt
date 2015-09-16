@@ -8,7 +8,7 @@
         var curso_seleccionado = 0;
         var cursos_abiertos = [];
         var curso_nombre = "";
-        var nam = document.form["mainform"]["name"];
+
         for (var i = 0, length = radios.length; i < length; i++) {
            if (radios[i].checked) {
                 curso_seleccionado = radios[i].value;
@@ -22,7 +22,7 @@
 </script>
 
 <div id="content-main">
-<form onsubmit="return ConfirmarInscripcion()"  method="POST", id="mainform" , action=".">
+<form onsubmit="return ConfirmarInscripcion();" method="POST", id="mainform" , action=".">
 {% csrf_token %}
     <br>
     <tr><td><h1>Cursos disponibles</h1></td></tr>
