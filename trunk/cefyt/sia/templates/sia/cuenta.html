@@ -22,6 +22,20 @@
 </script>
 
 <div id="content-main">
+
+
+<!-- Cursos inscriptos -->
+{% if lista_cursados_inscripto %}
+    <h1>Actualmente estás registrado a los siguientes cursos:<h1>
+    <table>
+    {% for curso in lista_cursados_inscripto %}
+        <td><h4>{{curso.nombre}}</h4></td>
+    {% endfor %}
+    </table>
+    <a href="/sia/listado_cuotas/">Ver estado de cuotas</a>
+{% endif %}
+
+
 <form onsubmit="return ConfirmarInscripcion();" method="POST", id="mainform" , action=".">
 {% csrf_token %}
     <br>

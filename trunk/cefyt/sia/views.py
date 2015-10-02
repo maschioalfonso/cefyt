@@ -9,7 +9,7 @@ from django.http import HttpResponse
 
 from reportlab.graphics.barcode.common import I2of5
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
+from reportlab.lib.pagesizes import A4, letter, landscape
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.platypus import *
@@ -210,7 +210,9 @@ def generar_pdf(cursado):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'filename="%s".pdf' % (cursado.nombre)
 
-    doc = SimpleDocTemplate(response, pagesize=A4)
+    alto , ancho = A4
+    doc = SimpleDocTemplate(response, pagesize=(ancho,alto))
+    #doc.pagesize = portrait(A4)
     elements = []
 
     styles = getSampleStyleSheet()
