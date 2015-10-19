@@ -6,9 +6,14 @@ from sia.models import (Alumno, Pais, Materia, Curso, Cursado, Cuota,
 
 class AlumnoAdmin(admin.ModelAdmin):
     list_display = ('usuario', 'id','documento', 'fecha_de_nacimiento',
+                    'nombre', 'apellido',
                     'pais', 'provincia', 'localidad', 'domicilio', 'telefono',
                     'telefono_alter')
     search_fields = ['usuario__username']
+    def nombre(self, instance):
+        return instance.usuario.first_name
+    def apellido(self, instance):
+        return instance.usuario.last_name
 
 
 class CursoAdmin(admin.ModelAdmin):
