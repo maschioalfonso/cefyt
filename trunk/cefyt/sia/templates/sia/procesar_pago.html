@@ -9,11 +9,21 @@
 </form>
 
 
-{% if archivo_filas %}
+{% if archivo_original %}
 <h3>Contenido archivo</h3>
     <table>
-    {% for fila in archivo_filas %}
+    {% for fila in archivo_original %}
         <tr><td>{{ fila }}</td></tr>
     {% endfor %}
+    </table>
+{% endif %}
+
+{% if pagos %}
+<h3>Pagos</h3>
+    <table>
+        <tr><td><b>ID cuota</b></td><td><b>ID alumno</b></td><td><b>Fecha de pago</b></td><td><b>Monto</b></td></tr>
+        {% for cuota_id, alumno_id, fecha_de_pago, monto in pagos %}
+            <tr><td>{{ cuota_id }}</td><td>{{ alumno_id }}</td><td>{{ fecha_de_pago }}</td><td>{{ monto }}</td></tr>
+        {% endfor %}
     </table>
 {% endif %}
