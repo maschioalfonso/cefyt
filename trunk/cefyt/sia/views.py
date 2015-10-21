@@ -16,7 +16,7 @@ from reportlab.platypus import *
 
 from sia.models import (Alumno, Cursado, DescubrimientoOpcion,
                         DescubrimientoCurso, Cuota)
-from sia.forms import RegistroForm
+from sia.forms import RegistroForm, SubirArchivoForm
 
 from datetime import date
 
@@ -388,5 +388,28 @@ def generar_cupon(request):
 
     return response
 
-# BUG: Si se registra, intenta inscribirse a un curso y
-# pone cancelar al cartel de advertencia.
+
+#
+# Procesamiento de pagos realizados por RapiPago.
+#
+def procesar_pago(request):
+    form = SubirArchivoForm()
+
+    # Procesar archivo
+    if request.method == 'POST':
+        form = SubirArchivoForm(request.POST, request.FILES)
+        if form.is_valid():
+            archivo_filas = procesar_archivo(request.FILES['archivo'])
+            context = {'archivo_filas': archivo_filas}
+            return render(request, 'sia/procesar_pago.html', context)
+
+    context = {'form': form}
+    return render(request, 'sia/procesar_pago.html', context)
+
+
+def procesar_archivo(archivo):
+    archivo_filas = []
+    for fila in archivo:
+        archivo_filas.append(fila)
+
+    return archivo_filas

@@ -1,0 +1,19 @@
+<form method="POST" action="." enctype="multipart/form-data">
+{% csrf_token %}
+    <table>
+        {{ form }}
+    </table>
+
+    <input type="submit" value="Cargar" class="input">
+
+</form>
+
+
+{% if archivo_filas %}
+<h3>Contenido archivo</h3>
+    <table>
+    {% for fila in archivo_filas %}
+        <tr><td>{{ fila }}</td></tr>
+    {% endfor %}
+    </table>
+{% endif %}
