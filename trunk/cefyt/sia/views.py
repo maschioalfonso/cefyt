@@ -16,7 +16,7 @@ from reportlab.platypus import *
 
 from sia.models import (Alumno, Cursado, DescubrimientoOpcion,
                         DescubrimientoCurso, Cuota)
-from sia.forms import RegistroForm
+from sia.forms import RegistroForm, SubirArchivoForm
 
 from datetime import date
 
@@ -30,6 +30,7 @@ CUIT_CEFYT = "C.U.I.T.: 30-67870110-2"
 CODPOSTAL_CEFYT = "X5022LJQ"
 LOCALIDAD_CEFYT = "Córdoba"
 PAIS_CEFYT = "Argentina"
+NUMERO_GIRE = "4057"
 
 
 def es_alumno(view):
@@ -268,7 +269,7 @@ def generar_cupon(request):
     cupon_valor = str('%.2f' % cuota.valor_cuota_pesos)
 
     # Generación del número cupón
-    nro_gire = "4057"           # Valor fijo
+    nro_gire = NUMERO_GIRE           # Valor fijo
     nro_cliente = '{:5d}'.format(alumno.id).replace(' ', '0')
     tipo_comprobante = "1"      # Tipo de comprobante: 1 dígito
     nro_comprobante ='{:6d}'.format(cuota.id).replace(' ', '0')
@@ -388,5 +389,52 @@ def generar_cupon(request):
 
     return response
 
-# BUG: Si se registra, intenta inscribirse a un curso y
-# pone cancelar al cartel de advertencia.
+
+#
+# Procesamiento de pagos realizados por RapiPago.
+#
+def procesar_pago(request):
+    form = SubirArchivoForm()
+
+    # Procesar archivo
+    if request.method == 'POST':
+        form = SubirArchivoForm(request.POST, request.FILES)
+        if form.is_valid():
+            archivo_original, pagos = procesar_archivo(request.FILES['archivo'])
+            context = {'archivo_original': archivo_original,
+                       'pagos': pagos,
+                       }
+
+            return render(request, 'sia/procesar_pago.html', context)
+
+    context = {'form': form}
+    return render(request, 'sia/procesar_pago.html', context)
+
+
+
+def procesar_archivo(archivo):
+    """Procesa el archivo 'archivo' y retorna una tupla (original, pagos)
+
+    Donde:
+    'original': Es una lista ordenada que contiene cada fila del archivo.
+    'pagos': Una lista que contiene 4-uplas de la forma:
+             (cuota_id, alumno_id, fecha de pago, monto)
+    """
+
+    archivo_original = []
+    pagos = []
+    for fila in archivo:
+        fila = str(fila)[2:-5] # Se quita el prefijo b' y sufijo '/r/n
+        archivo_original.append(fila)
+
+        if fila[23:23+4] != NUMERO_GIRE:
+            # Excluidos
+            continue
+
+        fecha_de_pago = "/".join([fila[6:6+2], fila[4:4+2], fila[0:4]])
+        alumno_id = fila[27:27+5]
+        cuota_id = fila[33:33+6]
+        monto = fila[39:39+4] + "." + fila[43:43+2]
+        pagos.append((cuota_id, alumno_id, fecha_de_pago, monto))
+
+    return (archivo_original, pagos)

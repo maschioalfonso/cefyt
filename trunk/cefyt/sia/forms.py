@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.forms import (ModelForm, PasswordInput, EmailField, CharField,
-                          ModelChoiceField, IntegerField, DateField)
+                          ModelChoiceField, IntegerField, DateField, Form, FileField)
 from sia.models import Alumno, Pais
 from django.db import models
 from django.forms.extras.widgets import SelectDateWidget
@@ -44,3 +44,7 @@ class RegistroForm(ModelForm):
                   'telefono': "Teléfono",
                   'telefono_alter': 'Teléfono alternativo',
                   'fecha_de_nacimiento': 'Fecha de nacimiento'}
+
+
+class SubirArchivoForm(Form):
+    archivo = FileField()
