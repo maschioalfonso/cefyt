@@ -322,7 +322,6 @@ def generar_cupon(request):
 
     apellido = alumno.usuario.last_name
     nombre = alumno.usuario.first_name
-
     domicilio = alumno.domicilio
     localidad = alumno.localidad
     provincia = alumno.provincia
@@ -335,7 +334,7 @@ def generar_cupon(request):
     else:
         nro_cuota = "Cuota número " + str(cuota.numero)
 
-    cursado = "Curso " + cuota.cursado.nombre
+    cursado = "Curso: " + cuota.cursado.nombre
     valor_cuota = "$" + cupon_valor
 
     # Código barras
@@ -354,11 +353,13 @@ def generar_cupon(request):
              [],
              ['Señor/a:', apellido + ', ' + nombre],
              ['Domicilio:', domicilio + ', ' + localidad + ', ' + provincia + ', ' + pais],
-             ['En concepto de:', nro_cuota + ' ' + cursado],
+             ['En concepto de:', nro_cuota],
+             ['', Paragraph(cursado, styles['Normal'])],
              ['Total a pagar:', valor_cuota],
              [],
              [bc],
-             [nro_cupon]]
+             [nro_cupon]
+             ]
 
     t = Table(datos)
     t.setStyle(TableStyle([  # Logo
@@ -381,8 +382,8 @@ def generar_cupon(request):
 
     elements.append(t)
 
-    d = Paragraph('Depuracion: ' + depuracion, styles["Heading5"])
-    elements.append(d)
+    # d = Paragraph('Depuracion: ' + depuracion, styles["Heading5"])
+    # elements.append(d)
 
 
     doc.build(elements)
