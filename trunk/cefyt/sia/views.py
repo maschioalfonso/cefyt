@@ -424,7 +424,7 @@ def procesar_archivo(archivo):
     archivo_original = []
     pagos = []
     for fila in archivo:
-        fila = str(fila)[2:-5] # Se quita el prefijo b' y sufijo '/r/n
+        fila = str(fila)[:-5] # Se quita el prefijo b' y sufijo '/r/n
         archivo_original.append(fila)
 
         if fila[23:23+4] != NUMERO_GIRE:
