@@ -54,7 +54,7 @@ def cuenta(request):
 
     alumno = obtener_alumno(request)
     alumno_es_argentino = es_argentino(alumno)
-    noticias = Noticia.objects.all()
+    noticias = Noticia.objects.all().order_by('-fecha')
 
     cursados = Cursado.objects.filter(
         inscripcion_abierta=True).exclude(alumno=alumno)
