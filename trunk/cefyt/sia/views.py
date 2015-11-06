@@ -15,7 +15,7 @@ from reportlab.lib.units import mm
 from reportlab.platypus import *
 
 from sia.models import (Alumno, Cursado, DescubrimientoOpcion,
-                        DescubrimientoCurso, Cuota)
+                        DescubrimientoCurso, Cuota, Noticia)
 from sia.forms import RegistroForm, SubirArchivoForm
 
 from datetime import date
@@ -52,10 +52,9 @@ def cuenta(request):
     if request.method == "GET" and request.user.is_superuser:
         return redirect("admin:index")
 
-    usuario = User.objects.get(username=request.user.username)
-    alumno = Alumno.objects.get(usuario=usuario)
-
+    alumno = obtener_alumno(request)
     alumno_es_argentino = es_argentino(alumno)
+    noticias = Noticia.objects.all()
 
     cursados = Cursado.objects.filter(
         inscripcion_abierta=True).exclude(alumno=alumno)
@@ -86,7 +85,9 @@ def cuenta(request):
     context = {'lista_cursados': cursados,
                'alumno_es_argentino': alumno_es_argentino,
                'lista_cursados_inscripto': cursados_inscripto,
-               'opcion_descubrimiento': opciones_descubrimiento}
+               'opcion_descubrimiento': opciones_descubrimiento,
+               'noticias': noticias
+               }
     return render(request, 'sia/cuenta.html', context)
 
 
@@ -140,10 +141,9 @@ def registro(request):
 @login_required
 def listado_cuotas(request):
 
-    usuario = User.objects.get(username=request.user.username)
-    alumno = Alumno.objects.get(usuario=usuario)
-    lista_cuotas = Cuota.objects.filter(alumno=alumno)
+    alumno = obtener_alumno(request)
     alumno_es_argentino = es_argentino(alumno)
+    lista_cuotas = Cuota.objects.filter(alumno=alumno)
 
     context = {'lista_cuotas': lista_cuotas,
                'alumno_es_argentino': alumno_es_argentino,
@@ -262,8 +262,7 @@ def generar_pdf(cursado):
 def generar_cupon(request):
     response = HttpResponse(content_type='application/pdf')
 
-    usuario = User.objects.get(username=request.user.username)
-    alumno = Alumno.objects.get(usuario=usuario)
+    alumno = obtener_alumno(request)
     cuota = Cuota.objects.get(id=request.POST.get('cuota'))
 
     cupon_valor = str('%.2f' % cuota.valor_cuota_pesos)
@@ -439,3 +438,9 @@ def procesar_archivo(archivo):
         pagos.append((cuota_id, alumno_id, fecha_de_pago, monto))
 
     return (archivo_original, pagos)
+
+def obtener_alumno(request):
+    usuario = User.objects.get(username=request.user.username)
+    alumno = Alumno.objects.get(usuario=usuario)
+
+    return alumno

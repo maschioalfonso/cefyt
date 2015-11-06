@@ -100,5 +100,16 @@
 
 </form>
 
+<!-- Noticias -->
+{% if noticias %}
+    <h2>Noticias</h2>
+    <table>
+    {% for noticia in noticias %}
+        <tr><td>{{ noticia.fecha }}</td><td>{{ noticia.titulo }}</td></tr>
+        <tr><td></td><td>{{ noticia.noticia }}</td></tr>
+    {% endfor %}
+    </table>
+{% endif %}
+
 </div>
 {% endblock %}
