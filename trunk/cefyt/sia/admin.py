@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django.contrib import admin
 from sia.models import (Alumno, Pais, Materia, Curso, Cursado, Cuota,
-                        DescubrimientoOpcion, DescubrimientoCurso)
+                        DescubrimientoOpcion, DescubrimientoCurso, Noticia)
 
 
 class AlumnoAdmin(admin.ModelAdmin):
@@ -48,6 +48,10 @@ class DescubrimientoCursoAdmin(admin.ModelAdmin):
     list_display = ('cursada', 'alumno', 'opcion')
 
 
+class NoticiaAdmin(admin.ModelAdmin):
+    list_display = ('id', 'fecha', 'noticia')
+
+
 admin.site.register(Pais)
 admin.site.register(Alumno, AlumnoAdmin)
 admin.site.register(Materia)
@@ -56,3 +60,4 @@ admin.site.register(Cursado, CursadoAdmin)
 admin.site.register(Cuota, CuotaAdmin)
 admin.site.register(DescubrimientoOpcion)
 admin.site.register(DescubrimientoCurso, DescubrimientoCursoAdmin)
+admin.site.register(Noticia, NoticiaAdmin)

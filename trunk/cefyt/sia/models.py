@@ -183,3 +183,12 @@ class Cuota(models.Model):
     def __str__(self):
         return self.alumno.usuario.first_name + ': ' +\
             self.cursado.nombre + ' - ' + 'Cuota: ' + str(self.numero)
+
+
+class Noticia(models.Model):
+    fecha = models.DateTimeField(auto_now_add=True)
+    titulo = models.CharField(max_length=MAX_LENGTH)
+    noticia = models.CharField(max_length=MAX_LENGTH)
+
+    def __str__(self):
+        return str(self.id)
