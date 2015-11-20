@@ -1,25 +1,43 @@
 {% extends "admin/base_site.html" %}
 {% block content %}
 
-Generar listados de inscriptos:
-<br>
-<br>
+<h1>Generar reportes</h1>
 
+<br>
 <form method="POST" action="">
 {% csrf_token %}
+
+    <h4>Seleccionar curso:</h4>
     <table>
         {% for curso in lista_cursados %}
             <tr>
                 <td>
                     <input type="radio" name="curso" value="{{ curso.id }}" checked>
-                    <label><b>{{ curso }}</b></label></input>
+                    <label>{{ curso }}</label></input>
                 </td>
             </tr>
         {% endfor %}
-        <tr><td>
-            <input type="submit" value="Generar" class="input">
-        </td></tr>
     </table>
+
+    <h4>Seleccionar reporte:</h4>
+    <table>
+        <tr>
+            <td>
+                <input type="radio" name="tipo_reporte" value="inscriptos" checked>
+                <label>Planilla de inscriptos</label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="radio" name="tipo_reporte" value="morosos">
+                <label>Alumnos morosos</label>
+            </td>
+        </tr>
+    </table>
+
+
+
+    <input type="submit" value="Generar" class="input">
 </form>
 
 {% endblock %}

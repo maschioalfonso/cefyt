@@ -151,6 +151,7 @@ def listado_cuotas(request):
 
     return render(request, 'sia/listado_cuotas.html', context)
 
+
 @login_required
 def generar_reporte(request):
     if not request.user.is_superuser:
@@ -159,8 +160,14 @@ def generar_reporte(request):
     cursados = Cursado.objects.filter()
 
     if request.method == 'POST':
+        tipo_reporte = request.POST.get('tipo_reporte')
         cursado = Cursado.objects.get(id=request.POST.get('curso'))
-        return generar_pdf(cursado)
+
+        if tipo_reporte == "inscriptos":
+            return generar_pdf(cursado)
+
+        if tipo_reporte == "morosos":
+            return reporte_morosos_pdf(cursado)
 
     context = {'lista_cursados': cursados}
     return render(request, 'sia/generar_reporte.html', context)
@@ -206,12 +213,65 @@ def es_argentino(alumno):
     return alumno.pais.nombre in ["Argentina", "argentina"]
 
 
+def reporte_morosos_pdf(cursado):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="%s".pdf' % (cursado.nombre + " morosos")
+
+    alto, ancho = A4
+    doc = SimpleDocTemplate(response, pagesize=(ancho,alto))
+    #doc.pagesize = portrait(A4)
+    elements = []
+
+    styles = getSampleStyleSheet()
+
+    # Titulo página
+    titulo = Paragraph(NOMBRE_CEFYT + ": Reporte morosos", styles["Heading2"])
+    elements.append(titulo)
+
+    # Cursado
+    curso = Paragraph("Curso: " + str(cursado), styles["Normal"])
+    elements.append(curso)
+
+    # Fecha
+    fecha = Paragraph("Fecha: " + time.strftime("%c"), styles["Normal"])
+    elements.append(fecha)
+
+    alumnos = []
+    alumnos.append(['Apellido', 'Nombre', 'Nombre de usuario', 'Cuotas impagas'])
+    for alumno in cursado.alumno.all():
+        cuotas_impagas = Cuota.objects.filter(
+                alumno=alumno,
+                cursado=cursado,
+                pagado=False)
+
+        cuotas = ''
+        for cuota in cuotas_impagas:
+            if cuota.es_inscripcion:
+                cuotas = 'Inscripción, ' + cuotas
+            elif cuota.es_certificado:
+                cuotas = 'Certificado, ' + cuotas
+            else:
+                cuotas = cuotas + str(cuota.numero) + ", "
+
+        alumnos.append([alumno.usuario.last_name, alumno.usuario.first_name, alumno.usuario.username, cuotas])
+
+    t = Table(alumnos)
+    t.setStyle(TableStyle(
+            [('BACKGROUND', (0, 0), (3, 0), colors.lavender),
+             ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+             ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+    elements.append(t)
+
+
+    doc.build(elements)
+
+    return response
 
 def generar_pdf(cursado):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'filename="%s".pdf' % (cursado.nombre)
 
-    alto , ancho = A4
+    alto, ancho = A4
     doc = SimpleDocTemplate(response, pagesize=(ancho,alto))
     #doc.pagesize = portrait(A4)
     elements = []
