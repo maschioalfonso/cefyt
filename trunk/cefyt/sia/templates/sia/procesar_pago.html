@@ -1,11 +1,15 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+
 <form method="POST" action="." enctype="multipart/form-data">
 {% csrf_token %}
     <table>
         {{ form }}
     </table>
 
-    <input type="submit" value="Cargar" class="input">
-
+    {% if not archivo_original %}
+        <input type="submit" value="Cargar" class="input">
+    {% endif %}
 </form>
 
 
@@ -27,3 +31,5 @@
         {% endfor %}
     </table>
 {% endif %}
+
+{% endblock %}

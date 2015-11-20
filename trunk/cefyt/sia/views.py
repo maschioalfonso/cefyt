@@ -393,6 +393,7 @@ def generar_cupon(request):
 #
 # Procesamiento de pagos realizados por RapiPago.
 #
+@login_required
 def procesar_pago(request):
     form = SubirArchivoForm()
 
