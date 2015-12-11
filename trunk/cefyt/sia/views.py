@@ -241,26 +241,83 @@ def reporte_morosos_pdf(cursado):
     fecha = Paragraph("Fecha: " + time.strftime("%c"), styles["Normal"])
     elements.append(fecha)
 
-    alumnos = []
-    alumnos.append(['Apellido', 'Nombre', 'Nombre de usuario', 'Cuotas impagas'])
-    for alumno in cursado.alumno.all():
-        cuotas_impagas = Cuota.objects.filter(
-                alumno=alumno,
-                cursado=cursado,
-                pagado=False)
 
-        cuotas = ''
-        for cuota in cuotas_impagas:
-            if cuota.es_inscripcion:
-                cuotas = 'Inscripción, ' + cuotas
-            elif cuota.es_certificado:
-                cuotas = 'Certificado, ' + cuotas
+    # Datos
+    datos = []
+    datos.append(["Alumno"])
+    for alumno in cursado.alumno.all().order_by('usuario__last_name'):
+        fila = []
+        valor_fila = 0
+
+        alumno_apellido = alumno.usuario.last_name.strip().title()
+        alumno_nombre = alumno.usuario.first_name.strip().title()
+        alumno_usuario = alumno.usuario.username.strip()
+        id_alumno = alumno_apellido + ", " + alumno_nombre + " (" + alumno_usuario + ")"
+        alumno_paragraph = Paragraph("<b>" + id_alumno + "</b>", styles["Normal"])
+        fila.append(alumno_paragraph)
+        datos.append(fila)
+
+        fila = []
+        inscripcion = Cuota.objects.filter(
+            alumno=alumno,
+            cursado=cursado,
+            es_inscripcion=True,
+            pagado=True)
+
+        # Inscripción
+        fila.append('Inscripción: ')
+        temp = ''
+        if inscripcion:
+            temp += '$: ' + str(inscripcion[0].valor_cuota_pesos) + ', '
+            temp += 'u$s: ' + str(inscripcion[0].valor_cuota_dolares) + ', '
+            temp += 'Fecha de pago: ' + str(inscripcion[0].fecha_de_pago)
+            fila.append(temp)
+            fila.append("11")
+        else:
+            fila.append('No abonado')
+            alumno_paragraph = Paragraph("0", styles["Normal"])
+            fila.append(alumno_paragraph)
+        datos.append(fila)
+
+        # Cuotas
+        for cuota in Cuota.objects.filter(
+            alumno=alumno,
+            cursado=cursado,
+            es_certificado=False,
+            es_inscripcion=False).order_by('numero'):
+
+            fila = []
+            fila.append('Cuota nº: ' + str(cuota.numero))
+            temp = ''
+            if cuota.pagado:
+                temp += '$: ' + str(cuota.valor_cuota_pesos) + ', '
+                temp += 'u$s: ' + str(cuota.valor_cuota_dolares) + ', '
+                temp += 'Fecha de pago: ' + str(cuota.fecha_de_pago)
             else:
-                cuotas = cuotas + str(cuota.numero) + ", "
+                fila.append('No abonado')
 
-        alumnos.append([alumno.usuario.last_name, alumno.usuario.first_name, alumno.usuario.username, cuotas])
+            datos.append(fila)
 
-    t = Table(alumnos)
+        # Certificado
+        fila = []
+        fila.append('Certificado: ')
+        temp = ''
+        certificado = Cuota.objects.filter(
+            alumno=alumno,
+            cursado=cursado,
+            es_certificado=True,
+            pagado=True)
+
+        if certificado:
+            temp += '$: ' + str(certificado[0].valor_cuota_pesos) + ', '
+            temp += 'u$s: ' + str(certificado[0].valor_cuota_dolares) + ', '
+            temp += 'Fecha de pago: ' + str(certificado[0].fecha_de_pago)
+            fila.append(temp)
+        else:
+            fila.append('No abonado')
+        datos.append(fila)
+
+    t = Table(datos)
     t.setStyle(TableStyle(
             [('BACKGROUND', (0, 0), (3, 0), colors.lavender),
              ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
@@ -271,6 +328,7 @@ def reporte_morosos_pdf(cursado):
     doc.build(elements)
 
     return response
+
 
 def generar_pdf(cursado):
     response = HttpResponse(content_type='application/pdf')
