@@ -171,9 +171,6 @@ def generar_reporte(request):
         if tipo_reporte == "morosos":
             return reporte_morosos_pdf(cursado)
 
-        if tipo_reporte == "valor_recaudado":
-            return reporte_recaudacion_pdf(cursado)
-
     context = {'lista_cursados': cursados}
     return render(request, 'sia/generar_reporte.html', context)
 
@@ -230,7 +227,7 @@ def reporte_morosos_pdf(cursado):
     styles = getSampleStyleSheet()
 
     # Titulo página
-    titulo = Paragraph(NOMBRE_CEFYT + ": Reporte morosos", styles["Heading2"])
+    titulo = Paragraph(NOMBRE_CEFYT + ": Estado de deuda y recaudación", styles["Heading2"])
     elements.append(titulo)
 
     # Cursado
@@ -401,51 +398,6 @@ def generar_pdf(cursado):
 
     return response
 
-
-def reporte_recaudacion_pdf(cursado):
-
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'filename="%s".pdf' % (cursado.nombre)
-
-    doc = SimpleDocTemplate(response, pagesize=A4)
-    #doc.pagesize = portrait(A4)
-    elements = []
-
-    styles = getSampleStyleSheet()
-
-    # Titulo página
-    titulo = Paragraph(NOMBRE_CEFYT, styles["Heading2"])
-    elements.append(titulo)
-
-    # Cursado
-    curso = Paragraph("Curso: " + str(cursado), styles["Normal"])
-    elements.append(curso)
-
-    # Fecha
-    fecha = Paragraph("Fecha: " + time.strftime("%c"), styles["Normal"])
-    elements.append(fecha)
-
-    # Cuotas pagadas
-    cuotas = Cuota.objects.filter(
-        cursado=cursado,
-        pagado=True)
-
-    total_valor_cuota_pesos = 0
-    total_valor_cuota_dolares = 0
-
-    for cuota in cuotas:
-        total_valor_cuota_pesos += cuota.valor_cuota_pesos
-        total_valor_cuota_dolares += cuota.valor_cuota_dolares
-
-    tmp = Paragraph("Total cuota $: " + str(total_valor_cuota_pesos), styles["Normal"])
-    elements.append(tmp)
-    tmp = Paragraph("Total cuota u$s: " + str(total_valor_cuota_dolares), styles["Normal"])
-    elements.append(tmp)
-
-
-    doc.build(elements)
-
-    return response
 
 def generar_cupon(request):
     response = HttpResponse(content_type='application/pdf')
