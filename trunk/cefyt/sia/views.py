@@ -243,9 +243,13 @@ def reporte_morosos_pdf(cursado):
 
 
     # Datos
+    total_recaudado_pesos = 0
+    total_recaudado_dolares = 0
+    cantidad_inscriptos = 0
     datos = []
-    datos.append(["Alumno"])
+    datos.append(["Alumno", "Estado", "Valor en pesos", "Valor en dólares"])
     for alumno in cursado.alumno.all().order_by('usuario__last_name'):
+        cantidad_inscriptos += 1
         fila = []
         valor_fila = 0
 
@@ -268,14 +272,17 @@ def reporte_morosos_pdf(cursado):
         fila.append('Inscripción: ')
         temp = ''
         if inscripcion:
-            temp += '$: ' + str(inscripcion[0].valor_cuota_pesos) + ', '
-            temp += 'u$s: ' + str(inscripcion[0].valor_cuota_dolares) + ', '
             temp += 'Fecha de pago: ' + str(inscripcion[0].fecha_de_pago)
-            fila.append(temp)
-            fila.append("11")
+            temp += '<br />'
+            temp += 'Comprobante: ' + str(inscripcion[0].comprobante)
+            fila.append(Paragraph(temp, styles["Normal"]))
+            fila.append(inscripcion[0].valor_cuota_pesos)
+            fila.append(inscripcion[0].valor_cuota_dolares)
+            total_recaudado_pesos += inscripcion[0].valor_cuota_pesos
+            total_recaudado_dolares += inscripcion[0].valor_cuota_dolares
         else:
             fila.append('No abonado')
-            alumno_paragraph = Paragraph("0", styles["Normal"])
+            alumno_paragraph = Paragraph("", styles["Normal"])
             fila.append(alumno_paragraph)
         datos.append(fila)
 
@@ -287,12 +294,17 @@ def reporte_morosos_pdf(cursado):
             es_inscripcion=False).order_by('numero'):
 
             fila = []
-            fila.append('Cuota nº: ' + str(cuota.numero))
+            fila.append(Paragraph('Cuota nº: ' + str(cuota.numero), styles["Normal"]))
             temp = ''
             if cuota.pagado:
-                temp += '$: ' + str(cuota.valor_cuota_pesos) + ', '
-                temp += 'u$s: ' + str(cuota.valor_cuota_dolares) + ', '
                 temp += 'Fecha de pago: ' + str(cuota.fecha_de_pago)
+                temp += '<br />'
+                temp += 'Comprobante: ' + str(cuota.comprobante)
+                fila.append(Paragraph(temp, styles["Normal"]))
+                fila.append(cuota.valor_cuota_pesos)
+                fila.append(cuota.valor_cuota_dolares)
+                total_recaudado_pesos += cuota.valor_cuota_pesos
+                total_recaudado_dolares += cuota.valor_cuota_dolares
             else:
                 fila.append('No abonado')
 
@@ -300,7 +312,7 @@ def reporte_morosos_pdf(cursado):
 
         # Certificado
         fila = []
-        fila.append('Certificado: ')
+        fila.append(Paragraph('Certificado', styles["Normal"]))
         temp = ''
         certificado = Cuota.objects.filter(
             alumno=alumno,
@@ -309,10 +321,14 @@ def reporte_morosos_pdf(cursado):
             pagado=True)
 
         if certificado:
-            temp += '$: ' + str(certificado[0].valor_cuota_pesos) + ', '
-            temp += 'u$s: ' + str(certificado[0].valor_cuota_dolares) + ', '
             temp += 'Fecha de pago: ' + str(certificado[0].fecha_de_pago)
-            fila.append(temp)
+            temp += '<br />'
+            temp += 'Comprobante: ' + str(certificado[0].comprobante)
+            fila.append(Paragraph(temp, styles["Normal"]))
+            fila.append(certificado[0].valor_cuota_pesos)
+            fila.append(certificado[0].valor_cuota_dolares)
+            total_recaudado_pesos += certificado[0].valor_cuota_pesos
+            total_recaudado_dolares += certificado[0].valor_cuota_dolares
         else:
             fila.append('No abonado')
         datos.append(fila)
@@ -324,6 +340,10 @@ def reporte_morosos_pdf(cursado):
              ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
     elements.append(t)
 
+    # Total recaudado
+    elements.append(Paragraph("Cantidad inscriptos: " + str(cantidad_inscriptos), styles["Normal"]))
+    elements.append(Paragraph("Total recaudado $: " + str(total_recaudado_pesos), styles["Normal"]))
+    elements.append(Paragraph("Total recaudado u$s: " + str(total_recaudado_dolares), styles["Normal"]))
 
     doc.build(elements)
 
