@@ -171,6 +171,9 @@ def generar_reporte(request):
         if tipo_reporte == "morosos":
             return reporte_morosos_pdf(cursado)
 
+        if tipo_reporte == "cursos_inscriptos_alumno":
+            return reporte_cursos_inscriptos_alumno_pdf(cursado)
+
     context = {'lista_cursados': cursados}
     return render(request, 'sia/generar_reporte.html', context)
 
@@ -213,6 +216,52 @@ def generar_cuotas(alumno, cursado):
 
 def es_argentino(alumno):
     return alumno.pais.nombre in ["Argentina", "argentina"]
+
+
+def reporte_cursos_inscriptos_alumno_pdf(cursado):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'filename="%s".pdf' % (cursado.nombre + " cursos por alumno")
+
+    doc = SimpleDocTemplate(response, pagesize=landscape(A4))
+    elements = []
+
+    styles = getSampleStyleSheet()
+
+    # Titulo página
+    titulo = Paragraph(NOMBRE_CEFYT + ": Cursos inscriptos por alumnos", styles["Heading2"])
+    elements.append(titulo)
+
+    # Fecha
+    fecha = Paragraph("Fecha: " + time.strftime("%c"), styles["Normal"])
+    elements.append(fecha)
+
+    # Datos
+    datos = []
+    datos.append(["Nombre alumnos (usuario)", "Cursos inscriptos"])
+    for alumno in Alumno.objects.all().order_by('usuario__last_name'):
+        cursos_inscriptos = ""
+        for curso in alumno.cursado_set.all():
+            cursos_inscriptos += "\"" + curso.nombre + "\"" + '<br />'
+
+        alumno_nombre = alumno.usuario.last_name
+        alumno_nombre += ", " 
+        alumno_nombre += alumno.usuario.first_name
+        alumno_nombre = alumno_nombre.title()
+        alumno_nombre += " ("
+        alumno_nombre += alumno.usuario.username
+        alumno_nombre += ")"
+        datos.append([alumno_nombre, Paragraph(cursos_inscriptos, styles["Normal"])])
+
+    t = Table(datos)
+    t.setStyle(TableStyle(
+            [('BACKGROUND', (0, 0), (3, 0), colors.lavender),
+             ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+             ('BOX', (0, 0), (-1, -1), 0.25, colors.black)]))
+    elements.append(t)
+
+    doc.build(elements)
+
+    return response
 
 
 def reporte_morosos_pdf(cursado):
