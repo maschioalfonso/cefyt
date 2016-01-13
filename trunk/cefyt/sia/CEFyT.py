@@ -1,0 +1,8 @@
+NOMBRE_CEFYT = "CEFyT - Centro de Estudios Filosóficos y Teológicos"
+DOMICILIO_CEFYT = "Av. Padre Claret 5601"
+BARRIO_CEFYT = "Bº Padre Claret"
+CUIT_CEFYT = "C.U.I.T.: 30-67870110-2"
+CODPOSTAL_CEFYT = "X5022LJQ"
+LOCALIDAD_CEFYT = "Córdoba"
+PAIS_CEFYT = "Argentina"
+NUMERO_GIRE = "4057"
