@@ -3,21 +3,8 @@
 
 <script>
     function ConfirmarInscripcion(){
-
-        var radios = document.getElementsByName('curso');
-        var curso_seleccionado = 0;
-        var cursos_abiertos = [];
-        var curso_nombre = "";
-
-        for (var i = 0, length = radios.length; i < length; i++) {
-           if (radios[i].checked) {
-                curso_seleccionado = radios[i].value;
-            }
-        }
-        mensaje = '¿Estás seguro que deseas inscribirte al curso ';
-        curso_nombre =document.getElementById(curso_seleccionado).innerHTML;
-
-        return confirm(mensaje + curso_nombre + "?");
+        mensaje = '¿Estás seguro que deseas inscribirte al curso?';
+        return confirm(mensaje);
     }
 </script>
 
@@ -51,7 +38,7 @@
 <col width="600">
 {% for curso in lista_cursados %}
     {% if curso.inscripcion_abierta %}
-        <tr><td><input type="radio" name="curso" value="{{curso.id}}" checked><b><label id="{{curso.id}}">{{ curso }}</label></b></input></td><td>{{ curso.curso.descripcion }}</td></tr>
+        <tr><td><b><label id="{{curso.id}}">{{ curso }}</label></b></input></td><td>{{ curso.curso.descripcion }}</td></tr>
 
         {% if alumno_es_argentino %}
             <tr><td></td><td>Costo inscripción: ${{curso.costo_inscripcion_pesos}}</td></tr>
