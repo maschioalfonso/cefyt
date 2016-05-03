@@ -2,13 +2,11 @@
 from django.forms import (ModelForm, PasswordInput, EmailField, CharField,
                           ModelChoiceField, IntegerField, DateField, Form, FileField)
 from sia.models import Alumno, Pais
-from django.db import models
 from django.forms.extras.widgets import SelectDateWidget
-from django.contrib.admin.widgets import AdminDateWidget
-from django.contrib.admin import widgets
 
 
-YEARS_CHOISES = tuple([str(year) for year in range(1920, 2015)])
+YEARS_CHOICES = tuple([str(year) for year in range(1920, 2015)])
+
 
 class RegistroForm(ModelForm):
     nombre = CharField()
@@ -16,9 +14,8 @@ class RegistroForm(ModelForm):
     email = EmailField(label="Correo electrónico")
     documento = IntegerField(label='Documento', min_value=1)
     password = CharField(widget=PasswordInput(), label="Contraseña")
-    pais = ModelChoiceField(queryset=Pais.objects.all(),
-                            empty_label=None, label='País')
-    fecha_de_nacimiento = DateField(widget=SelectDateWidget(years=YEARS_CHOISES))
+    pais = ModelChoiceField(queryset=Pais.objects.all(), empty_label=None, label='País')
+    fecha_de_nacimiento = DateField(widget=SelectDateWidget(years=YEARS_CHOICES))
 
     class Meta:
         model = Alumno
@@ -44,6 +41,29 @@ class RegistroForm(ModelForm):
                   'telefono': "Teléfono",
                   'telefono_alter': 'Teléfono alternativo',
                   'fecha_de_nacimiento': 'Fecha de nacimiento'}
+
+
+def alumno_desde_form(form, usuario):
+    """
+    Crea un nuevo Alumno a partir de un RegistroForm.
+
+    Precondición:
+        form.is_valid()
+    """
+
+    alumno = Alumno(
+        usuario=usuario,
+        documento=form.cleaned_data.get('documento'),
+        pais=form.cleaned_data.get('pais'),
+        fecha_de_nacimiento=form.cleaned_data.get('fecha_de_nacimiento'),
+        provincia=form.cleaned_data.get('provincia'),
+        localidad=form.cleaned_data.get('localidad'),
+        domicilio=form.cleaned_data.get('domicilio'),
+        telefono=form.cleaned_data.get('telefono'),
+        telefono_alter=form.cleaned_data.get('telefono_alter'))
+    alumno.save()
+
+    return alumno
 
 
 class SubirArchivoForm(Form):

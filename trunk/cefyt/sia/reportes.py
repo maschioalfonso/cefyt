@@ -2,9 +2,8 @@
 from django.http import HttpResponse
 
 from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4, letter, landscape
+from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import mm
 from reportlab.platypus import *
 
 from sia.models import Alumno, Cuota
@@ -37,10 +36,17 @@ def generar_pdf(cursado):
     alumnos.append(['Apellido', 'Nombre', 'Documento',
                     'País', 'Provincia', 'Localidad', 'Nombre de usuario'])
     for alumno in cursado.alumno.all():
-        alumnos.append([alumno.usuario.last_name, alumno.usuario.first_name, alumno.documento, alumno.pais, alumno.provincia, alumno.localidad, alumno.usuario.username])
+        alumnos.append([alumno.usuario.last_name,
+                        alumno.usuario.first_name,
+                        alumno.documento,
+                        alumno.pais,
+                        alumno.provincia,
+                        alumno.localidad,
+                        alumno.usuario.username])
         cantidad_inscriptos = cantidad_inscriptos + 1
 
-    numero_inscriptos = Paragraph("Cantidad de inscriptos: " + str(cantidad_inscriptos), styles["Normal"])
+    numero_inscriptos = Paragraph(
+        "Cantidad de inscriptos: " + str(cantidad_inscriptos), styles["Normal"])
     elements.append(numero_inscriptos)
 
     linea_vacia = Paragraph(".", styles["Normal"])
@@ -84,7 +90,7 @@ def reporte_cursos_inscriptos_alumno_pdf(cursado):
             cursos_inscriptos += "\"" + curso.nombre + "\"" + '<br />'
 
         alumno_nombre = alumno.usuario.last_name
-        alumno_nombre += ", " 
+        alumno_nombre += ", "
         alumno_nombre += alumno.usuario.first_name
         alumno_nombre = alumno_nombre.title()
         alumno_nombre += " ("
@@ -132,7 +138,6 @@ def reporte_morosos_pdf(cursado):
     for alumno in cursado.alumno.all().order_by('usuario__last_name'):
         cantidad_inscriptos += 1
         fila = []
-        valor_fila = 0
 
         alumno_apellido = alumno.usuario.last_name.strip().title()
         alumno_nombre = alumno.usuario.first_name.strip().title()
@@ -222,9 +227,12 @@ def reporte_morosos_pdf(cursado):
     elements.append(t)
 
     # Total recaudado
-    elements.append(Paragraph("Cantidad inscriptos: " + str(cantidad_inscriptos), styles["Normal"]))
-    elements.append(Paragraph("Total recaudado $: " + str(total_recaudado_pesos), styles["Normal"]))
-    elements.append(Paragraph("Total recaudado u$s: " + str(total_recaudado_dolares), styles["Normal"]))
+    elements.append(Paragraph(
+        "Cantidad inscriptos: " + str(cantidad_inscriptos), styles["Normal"]))
+    elements.append(Paragraph(
+        "Total recaudado $: " + str(total_recaudado_pesos), styles["Normal"]))
+    elements.append(Paragraph(
+        "Total recaudado u$s: " + str(total_recaudado_dolares), styles["Normal"]))
 
     doc = SimpleDocTemplate(response, pagesize=landscape(A4))
     doc.build(elements)

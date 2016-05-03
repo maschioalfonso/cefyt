@@ -4,9 +4,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
-from django.db.models import Sum
-
 from django.http import HttpResponse
 
 from reportlab.graphics.barcode.common import I2of5
@@ -16,32 +13,15 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.platypus import *
 
-from sia.models import (Alumno, Cursado, DescubrimientoOpcion,
-                        DescubrimientoCurso, Cuota, Noticia)
-from sia.forms import RegistroForm, SubirArchivoForm
+from sia.models import Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota, Noticia
+from sia.forms import RegistroForm, alumno_desde_form, SubirArchivoForm
 
 from sia.reportes import reporte_cursos_inscriptos_alumno_pdf, reporte_morosos_pdf, generar_pdf
 from sia.CEFyT import *
 
 from datetime import date
 
-import time
 
-
-def es_alumno(view):
-    def control_alumno(request):
-        usuario = User.objects.get(username=request.user.username)
-        try:
-            Alumno.objects.get(usuario=usuario)
-        except Alumno.DoesNotExist:
-            return redirect("/sia/")
-
-        return view(request)
-
-    return control_alumno
-
-
-# @es_alumno
 @login_required
 def cuenta(request):
     if request.method == "GET" and request.user.is_superuser:
@@ -81,8 +61,7 @@ def cuenta(request):
                'alumno_es_argentino': alumno_es_argentino,
                'lista_cursados_inscripto': cursados_inscripto,
                'opcion_descubrimiento': opciones_descubrimiento,
-               'noticias': noticias
-               }
+               'noticias': noticias}
     return render(request, 'sia/cuenta.html', context)
 
 
@@ -101,24 +80,13 @@ def registro(request):
                 username=request.POST.get('email'),
                 first_name=form.cleaned_data.get('nombre'),
                 last_name=form.cleaned_data.get('apellido'),
-                is_staff=True,
-                )
+                is_staff=True)
             if not creado:
                 usuario_existente = True
             else:
                 usuario.set_password(request.POST.get('password'))
                 usuario.save()
-                Alumno.objects.create(
-                    usuario=usuario,
-                    documento=form.cleaned_data.get('documento'),
-                    pais=form.cleaned_data.get('pais'),
-                    fecha_de_nacimiento=form.cleaned_data.get(
-                        'fecha_de_nacimiento'),
-                    provincia=form.cleaned_data.get('provincia'),
-                    localidad=form.cleaned_data.get('localidad'),
-                    domicilio=form.cleaned_data.get('domicilio'),
-                    telefono=form.cleaned_data.get('telefono'),
-                    telefono_alter=form.cleaned_data.get('telefono_alter'))
+                alumno_desde_form(form, usuario)
 
                 usuario = authenticate(
                     username=usuario.username,
@@ -141,8 +109,7 @@ def listado_cuotas(request):
     lista_cuotas = Cuota.objects.filter(alumno=alumno)
 
     context = {'lista_cuotas': lista_cuotas,
-               'alumno_es_argentino': alumno_es_argentino,
-              }
+               'alumno_es_argentino': alumno_es_argentino}
 
     return render(request, 'sia/listado_cuotas.html', context)
 
@@ -223,7 +190,7 @@ def generar_cupon(request):
     nro_gire = NUMERO_GIRE           # Valor fijo
     nro_cliente = '{:5d}'.format(alumno.id).replace(' ', '0')
     tipo_comprobante = "1"      # Tipo de comprobante: 1 dígito
-    nro_comprobante ='{:6d}'.format(cuota.id).replace(' ', '0')
+    nro_comprobante = '{:6d}'.format(cuota.id).replace(' ', '0')
     importe = '{:7.2f}'.format(cuota.valor_cuota_pesos).replace('.', '').replace(' ', '0')
     anio_vencimiento = str(date.today().year)[2:]      # Año vencimiento: 2 dígitos
     mes_vencimiento = "12"      # Mes vencimiento: 2 dígitos
@@ -234,7 +201,6 @@ def generar_cupon(request):
         importe + anio_vencimiento + mes_vencimiento + dia_vencimiento +\
         reservado
     nro_cupon = str(nro_cupon)
-
 
     # Cálculo del dígito verificador
     SECUENCIA = "13579357935793579357935793579"
@@ -247,8 +213,8 @@ def generar_cupon(request):
     nro_cupon += digito_verificador
 
     # Depuración
-    lista_campos = [nro_gire, nro_cliente, tipo_comprobante, nro_comprobante, 
-                    importe, anio_vencimiento, mes_vencimiento, dia_vencimiento, 
+    lista_campos = [nro_gire, nro_cliente, tipo_comprobante, nro_comprobante,
+                    importe, anio_vencimiento, mes_vencimiento, dia_vencimiento,
                     reservado, digito_verificador]
 
     depuracion = ' '
@@ -300,7 +266,7 @@ def generar_cupon(request):
              ['', DOMICILIO_CEFYT + "."],
              ['', BARRIO_CEFYT + "."],
              ['', CODPOSTAL_CEFYT + ". " + LOCALIDAD_CEFYT + ", " + PAIS_CEFYT + "."],
-             ['', CUIT_CEFYT  + "."],
+             ['', CUIT_CEFYT + "."],
              [],
              ['Señor/a:', apellido + ', ' + nombre],
              ['Domicilio:', domicilio + ', ' + localidad + ', ' + provincia + ', ' + pais],
@@ -336,7 +302,6 @@ def generar_cupon(request):
     # d = Paragraph('Depuracion: ' + depuracion, styles["Heading5"])
     # elements.append(d)
 
-
     doc.build(elements)
 
     return response
@@ -364,7 +329,6 @@ def procesar_pago(request):
     return render(request, 'sia/procesar_pago.html', context)
 
 
-
 def procesar_archivo(archivo):
     """Procesa el archivo 'archivo' y retorna una tupla (original, pagos)
 
@@ -377,7 +341,7 @@ def procesar_archivo(archivo):
     archivo_original = []
     pagos = []
     for fila in archivo:
-        fila = str(fila)[:-5] # Se quita el prefijo b' y sufijo '/r/n
+        fila = str(fila)[:-5]  # Se quita el prefijo b' y sufijo '/r/n
         archivo_original.append(fila)
 
         if fila[23:23+4] != NUMERO_GIRE:
@@ -391,6 +355,7 @@ def procesar_archivo(archivo):
         pagos.append((cuota_id, alumno_id, fecha_de_pago, monto))
 
     return (archivo_original, pagos)
+
 
 def obtener_alumno(request):
     usuario = User.objects.get(username=request.user.username)

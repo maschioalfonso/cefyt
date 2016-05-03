@@ -5,13 +5,13 @@ from sia.models import (Alumno, Pais, Materia, Curso, Cursado, Cuota,
 
 
 class AlumnoAdmin(admin.ModelAdmin):
-    list_display = ('usuario', 'id','documento', 'fecha_de_nacimiento',
-                    'nombre', 'apellido',
-                    'pais', 'provincia', 'localidad', 'domicilio', 'telefono',
-                    'telefono_alter')
-    search_fields = ['usuario__username','documento']
+    list_display = ('usuario', 'id', 'documento', 'fecha_de_nacimiento', 'nombre', 'apellido',
+                    'pais', 'provincia', 'localidad', 'domicilio', 'telefono', 'telefono_alter')
+    search_fields = ['usuario__username', 'documento']
+
     def nombre(self, instance):
         return instance.usuario.first_name
+
     def apellido(self, instance):
         return instance.usuario.last_name
 
@@ -32,7 +32,7 @@ class CuotaAdmin(admin.ModelAdmin):
                     'valor_cuota_pesos', 'valor_cuota_dolares',
                     'es_certificado', 'es_inscripcion', 'fecha_de_pago', 'comprobante', 'pagado')
 
-    search_fields = ['id', 'alumno__usuario__username','alumno__documento']
+    search_fields = ['id', 'alumno__usuario__username', 'alumno__documento']
 
     def alumno_id(self, instance):
         return instance.alumno.id
