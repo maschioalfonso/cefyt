@@ -66,6 +66,7 @@
         {% endif %}
 
         <tr><td></td><td>Cantidad de cuotas: {{curso.duracion}}</td></tr>
+        <tr><td></td><td><input type="submit" name="{{curso.id}}" value="Inscribirse" class="input"></td></tr>
     {% endif %}
 {% endfor %}
 </table>
@@ -80,8 +81,6 @@
     </table>
 
     <!-- Botón inscribirse -->
-    <br>
-    <input type="submit" value="Inscribirse" class="input">
     <br>
     <br>
 {% endif %}

@@ -40,7 +40,12 @@ def cuenta(request):
     if request.method == "POST":
         if cursados:
 
-            cursado = Cursado.objects.get(id=request.POST.get('curso'))
+            cursado_seleccionado = 0
+            for k, v in request.POST.items():
+                if v == 'Inscribirse':
+                    cursado_seleccionado = k
+
+            cursado = Cursado.objects.get(id=cursado_seleccionado)
 
             # Inscripción y generación de cuotas
             inscribir_alumno(alumno, cursado)
