@@ -46,6 +46,9 @@ class Alumno(models.Model):
     def __str__(self):
         return self.usuario.username
 
+    def apellido(self):
+        return self.usuario.username.last_name
+
 
 class Materia(models.Model):
     nombre = models.CharField(

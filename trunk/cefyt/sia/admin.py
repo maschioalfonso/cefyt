@@ -7,7 +7,7 @@ from sia.models import (Alumno, Pais, Materia, Curso, Cursado, Cuota,
 class AlumnoAdmin(admin.ModelAdmin):
     list_display = ('usuario', 'id', 'documento', 'fecha_de_nacimiento', 'nombre', 'apellido',
                     'pais', 'provincia', 'localidad', 'domicilio', 'telefono', 'telefono_alter')
-    search_fields = ['usuario__username', 'documento']
+    search_fields = ['usuario__last_name', 'usuario__first_name', 'documento',]
 
     def nombre(self, instance):
         return instance.usuario.first_name
@@ -28,14 +28,16 @@ class CursadoAdmin(admin.ModelAdmin):
 
 
 class CuotaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'alumno_id', 'obtener_documento', 'cursado', 'alumno', 'numero',
-                    'valor_cuota_pesos', 'valor_cuota_dolares',
-                    'es_certificado', 'es_inscripcion', 'fecha_de_pago', 'comprobante', 'pagado')
+    list_display = ( 'alumno_id','alumno_apellido' ,'obtener_documento', 'cursado', 'alumno', 'numero',
+                    'es_certificado', 'es_inscripcion', 'comprobante', 'pagado')
 
-    search_fields = ['id', 'alumno__usuario__username', 'alumno__documento']
+    search_fields = ['id', 'alumno__usuario__username','alumno__usuario__last_name', 'alumno__documento']
 
     def alumno_id(self, instance):
         return instance.alumno.id
+
+    def alumno_apellido(seld, instance):
+        return instance.alumno.usuario.last_name
 
     def obtener_documento(self, instance):
         return instance.alumno.documento
