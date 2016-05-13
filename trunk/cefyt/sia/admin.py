@@ -28,7 +28,7 @@ class CursadoAdmin(admin.ModelAdmin):
 
 
 class CuotaAdmin(admin.ModelAdmin):
-    list_display = ( 'alumno_id','alumno_apellido' ,'obtener_documento', 'cursado', 'alumno', 'numero',
+    list_display = ( 'id','alumno_id','alumno_apellido' ,'obtener_documento', 'cursado', 'alumno', 'numero',
                     'es_certificado', 'es_inscripcion', 'comprobante', 'pagado')
 
     search_fields = ['id', 'alumno__usuario__username','alumno__usuario__last_name', 'alumno__documento']
