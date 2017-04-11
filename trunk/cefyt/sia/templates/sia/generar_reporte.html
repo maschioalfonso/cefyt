@@ -90,6 +90,22 @@
     <input type="submit" value="Generar" class="input">
 </form>
 
-
+<script type="text/javascript" src="{% static 'sia/admin/js/jquery-3.2.1.min.js' %}"></script>
+<script type="text/javascript">
+    $('#filter_activos').click(function() {
+        if ($(this).is(':checked')) {
+            $('#cursados_activos').removeClass('hidden');
+        } else {
+            $('#cursados_activos').addClass('hidden');
+        }
+    });
+    $('#filter_inactivos').click(function() {
+        if ($(this).is(':checked')) {
+            $('#cursados_inactivos').removeClass('hidden');
+        } else {
+            $('#cursados_inactivos').addClass('hidden');
+        }
+    });
+</script>
 
 {% endblock %}
