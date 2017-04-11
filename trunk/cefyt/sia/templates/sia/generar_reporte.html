@@ -1,25 +1,67 @@
 {% extends "admin/base_site.html" %}
+{% load staticfiles %}
+
+{% block extrastyle %}
+<style>
+    .hidden {
+        display: none;
+    }
+    .filters label {
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 
 <h1>Generar reportes</h1>
 
 <br>
+
+<h3>Seleccionar cursado:</h3>
+<hr>
+<div class="filters">
+    <table>
+        <tr>
+            <td><label>Filtrar cursados:</label></td>
+            <td><input type="checkbox" name="filter_activos" id="filter_activos" checked="true"> Cursados activos (inscripción abierta)</td>
+            <td><input type="checkbox" name="filter_inactivos" id="filter_inactivos"> Cursados inactivos (inscripción finalizada)</td>
+        </tr>
+    </table>
+</div>
+
 <form method="POST" action="">
 {% csrf_token %}
+    <div id="cursados_activos">
+        <h5>Cursados activos (inscripción abierta)</h5>
+        <table>
+            {% for curso in lista_cursados_activos %}
+                <tr>
+                    <td>
+                        <input type="radio" name="curso" value="{{ curso.id }}" checked>
+                        <label>{{ curso }}</label></input>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-    <h4>Seleccionar curso:</h4>
-    <table>
-        {% for curso in lista_cursados %}
-            <tr>
-                <td>
-                    <input type="radio" name="curso" value="{{ curso.id }}" checked>
-                    <label>{{ curso }}</label></input>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+    <div id="cursados_inactivos" class="hidden">
+        <h5>Cursados inactivos (inscripción finalizada)</h5>
+        <table>
+            {% for curso in lista_cursados_inactivos %}
+                <tr>
+                    <td>
+                        <input type="radio" name="curso" value="{{ curso.id }}" checked>
+                        <label>{{ curso }}</label></input>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-    <h4>Seleccionar reporte:</h4>
+    <h3>Seleccionar reporte:</h3>
+    <hr>
     <table>
         <!-- Reporte inscriptos -->
         <tr>
@@ -45,9 +87,9 @@
         </tr>
     </table>
 
-
-
     <input type="submit" value="Generar" class="input">
 </form>
+
+
 
 {% endblock %}
