@@ -124,7 +124,10 @@ def generar_reporte(request):
     if not request.user.is_superuser:
         return redirect("sia:cuenta")
 
-    cursados = Cursado.objects.filter()
+    cursados_activos = Cursado.objects.filter(
+    inscripcion_abierta=True)
+    cursados_inactivos = Cursado.objects.filter(
+    inscripcion_abierta=False)
 
     if request.method == 'POST':
         tipo_reporte = request.POST.get('tipo_reporte')
@@ -139,7 +142,12 @@ def generar_reporte(request):
         if tipo_reporte == "cursos_inscriptos_alumno":
             return reporte_cursos_inscriptos_alumno_pdf(cursado)
 
-    context = {'lista_cursados': cursados}
+    # context = {'lista_cursados_activos': cursados_activos}
+    # context = {'lista_cursados_inactivos': cursados_inactivos}
+    context = {}
+    context['lista_cursados_activos'] = cursados_activos
+    context['lista_cursados_inactivos'] = cursados_inactivos
+
     return render(request, 'sia/generar_reporte.html', context)
 
 
