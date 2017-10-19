@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.forms import (ModelForm, PasswordInput, EmailField, CharField,
-                          ModelChoiceField, IntegerField, DateField, Form, FileField)
+                          ModelChoiceField, IntegerField, DateField)
 from sia.models import Alumno, Pais
 from django.forms.extras.widgets import SelectDateWidget
 
@@ -64,7 +64,3 @@ def alumno_desde_form(form, usuario):
     alumno.save()
 
     return alumno
-
-
-class SubirArchivoForm(Form):
-    archivo = FileField()
