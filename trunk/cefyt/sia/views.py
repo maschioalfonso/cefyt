@@ -3,23 +3,13 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from reportlab.graphics.barcode.common import I2of5
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import mm
-from reportlab.platypus import *
 
-from sia.forms import RegistroForm, alumno_desde_form, SubirArchivoForm
-from sia.models import Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota, Noticia
+from sia.forms import RegistroForm, alumno_desde_form
 from sia.mail_template import SUBSCRIPTION_MAIL_BODY, SUBSCRIPTION_MAIL_SUBJECT
+from sia.models import Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota, Noticia
 
 from sia.reportes import reporte_cursos_inscriptos_alumno_pdf, reporte_morosos_pdf, generar_pdf
-from sia.CEFyT import *
-
-from datetime import date
 
 
 @login_required
@@ -28,7 +18,6 @@ def cuenta(request):
         return redirect("admin:index")
 
     alumno = obtener_alumno(request)
-    alumno_es_argentino = es_argentino(alumno)
     noticias = Noticia.objects.all().order_by('-fecha')
 
     cursados = Cursado.objects.filter(
@@ -66,7 +55,6 @@ def cuenta(request):
         return redirect("sia:cuenta")
 
     context = {'lista_cursados': cursados,
-               'alumno_es_argentino': alumno_es_argentino,
                'lista_cursados_inscripto': cursados_inscripto,
                'opcion_descubrimiento': opciones_descubrimiento,
                'noticias': noticias}
@@ -113,11 +101,9 @@ def registro(request):
 def listado_cuotas(request):
 
     alumno = obtener_alumno(request)
-    alumno_es_argentino = es_argentino(alumno)
     lista_cuotas = Cuota.objects.filter(alumno=alumno)
 
-    context = {'lista_cuotas': lista_cuotas,
-               'alumno_es_argentino': alumno_es_argentino}
+    context = {'lista_cuotas': lista_cuotas}
 
     return render(request, 'sia/listado_cuotas.html', context)
 
@@ -128,9 +114,9 @@ def generar_reporte(request):
         return redirect("sia:cuenta")
 
     cursados_activos = Cursado.objects.filter(
-    inscripcion_abierta=True)
+        inscripcion_abierta=True)
     cursados_inactivos = Cursado.objects.filter(
-    inscripcion_abierta=False)
+        inscripcion_abierta=False)
 
     if request.method == 'POST':
         tipo_reporte = request.POST.get('tipo_reporte')
@@ -197,189 +183,6 @@ def enviar_mail(alumno, cursado):
         'from@example.com',
         [alumno.usuario.username],
         fail_silently=True)
-
-
-def es_argentino(alumno):
-    return alumno.pais.nombre.lower() == 'argentina'
-
-
-def generar_cupon(request):
-    response = HttpResponse(content_type='application/pdf')
-
-    alumno = obtener_alumno(request)
-    cuota = Cuota.objects.get(id=request.POST.get('cuota'))
-
-    cupon_valor = str('%.2f' % cuota.valor_cuota_pesos)
-
-    # Generación del número cupón
-    nro_gire = NUMERO_GIRE           # Valor fijo
-    nro_cliente = '{:5d}'.format(alumno.id).replace(' ', '0')
-    tipo_comprobante = "1"      # Tipo de comprobante: 1 dígito
-    nro_comprobante = '{:6d}'.format(cuota.id).replace(' ', '0')
-    importe = '{:7.2f}'.format(cuota.valor_cuota_pesos).replace('.', '').replace(' ', '0')
-    anio_vencimiento = str(date.today().year)[2:]      # Año vencimiento: 2 dígitos
-    mes_vencimiento = "12"      # Mes vencimiento: 2 dígitos
-    dia_vencimiento = "31"      # Día vencimiento: 2 dígitos
-    reservado = "0"             # Espacio reservado
-
-    nro_cupon = nro_gire + nro_cliente + tipo_comprobante + nro_comprobante +\
-        importe + anio_vencimiento + mes_vencimiento + dia_vencimiento +\
-        reservado
-    nro_cupon = str(nro_cupon)
-
-    # Cálculo del dígito verificador
-    SECUENCIA = "13579357935793579357935793579"
-    suma = 0
-    for i in range(len(nro_cupon)):
-        suma += int(nro_cupon[i]) * int(SECUENCIA[i])
-
-    digito_verificador = int(suma / 2) % 10
-    digito_verificador = str(digito_verificador)
-    nro_cupon += digito_verificador
-
-    # Depuración
-    lista_campos = [nro_gire, nro_cliente, tipo_comprobante, nro_comprobante,
-                    importe, anio_vencimiento, mes_vencimiento, dia_vencimiento,
-                    reservado, digito_verificador]
-
-    depuracion = ' '
-    depuracion = depuracion.join(lista_campos)
-
-    # Nombre del archivo
-    cupon = "Cupon"
-    response['Content-Disposition'] = 'filename="%s".pdf' % (cupon)
-
-    doc = SimpleDocTemplate(response, pagesize=A4)
-    elements = []
-    styles = getSampleStyleSheet()
-
-    # Imagen
-    logo = Image('./sia/static/sia/cupon/logo.bmp')
-    logo.drawHeight = 1.40*25.4*mm*logo.drawHeight / logo.drawWidth
-    logo.drawWidth = 1.40*25.4*mm
-
-    # Datos del cupón
-    titulo1 = Paragraph("SEMINARIO VILLA CLARET", styles["Heading2"])
-    titulo2 = Paragraph(NOMBRE_CEFYT, styles["Heading5"])
-
-    apellido = alumno.usuario.last_name
-    nombre = alumno.usuario.first_name
-    domicilio = alumno.domicilio
-    localidad = alumno.localidad
-    provincia = alumno.provincia
-    pais = alumno.pais.nombre
-
-    if cuota.es_inscripcion:
-        nro_cuota = "Inscripción "
-    elif cuota.es_certificado:
-        nro_cuota = "Certificado "
-    else:
-        nro_cuota = "Cuota número " + str(cuota.numero)
-
-    cursado = "Curso: " + cuota.cursado.nombre
-    valor_cuota = "$" + cupon_valor
-
-    # Código barras
-    tb = 0.254320987654 * mm  # thin bar
-    bh = 20 * mm  # bar height
-    bc = I2of5(
-        nro_cupon, barWidth=tb, ratio=3, barHeight=bh, bearers=0,
-        quiet=0, checksum=1)
-
-    datos = [[logo, titulo1],
-             ['', titulo2],
-             ['', DOMICILIO_CEFYT + "."],
-             ['', BARRIO_CEFYT + "."],
-             ['', CODPOSTAL_CEFYT + ". " + LOCALIDAD_CEFYT + ", " + PAIS_CEFYT + "."],
-             ['', CUIT_CEFYT + "."],
-             [],
-             ['Señor/a:', apellido + ', ' + nombre],
-             ['Domicilio:', domicilio + ', ' + localidad + ', ' + provincia + ', ' + pais],
-             ['En concepto de:', nro_cuota],
-             ['', Paragraph(cursado, styles['Normal'])],
-             ['Total a pagar:', valor_cuota],
-             [],
-             [bc],
-             [nro_cupon]
-             ]
-
-    t = Table(datos)
-    t.setStyle(TableStyle([  # Logo
-        ('SPAN', (0, 0), (0, -9)),
-        ('ALIGN', (0, 0), (0, 0), 'CENTER'),
-        ('VALIGN', (0, 0), (0, 0), 'CENTER'),
-
-        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
-        ('FONTNAME', (0, 2), (0, -4), 'Helvetica-Bold'),
-
-        # Código de barras
-        ('SPAN', (0, -2), (1, -2)),
-        ('ALIGN', (0, -2), (1, -2), 'CENTER'),
-
-        # Número de cupón
-        ('SPAN', (0, -1), (1, -1)),
-        ('ALIGN', (0, -1), (1, -1), 'CENTER'),
-
-        ('GRID', (0, 0), (-1, -1), 1, colors.gray)]))
-
-    elements.append(t)
-
-    # d = Paragraph('Depuracion: ' + depuracion, styles["Heading5"])
-    # elements.append(d)
-
-    doc.build(elements)
-
-    return response
-
-
-#
-# Procesamiento de pagos realizados por RapiPago.
-#
-@login_required
-def procesar_pago(request):
-    form = SubirArchivoForm()
-
-    # Procesar archivo
-    if request.method == 'POST':
-        form = SubirArchivoForm(request.POST, request.FILES)
-        if form.is_valid():
-            archivo_original, pagos = procesar_archivo(request.FILES['archivo'])
-            context = {'archivo_original': archivo_original,
-                       'pagos': pagos,
-                       }
-
-            return render(request, 'sia/procesar_pago.html', context)
-
-    context = {'form': form}
-    return render(request, 'sia/procesar_pago.html', context)
-
-
-def procesar_archivo(archivo):
-    """Procesa el archivo 'archivo' y retorna una tupla (original, pagos)
-
-    Donde:
-    'original': Es una lista ordenada que contiene cada fila del archivo.
-    'pagos': Una lista que contiene 4-uplas de la forma:
-             (cuota_id, alumno_id, fecha de pago, monto)
-    """
-
-    archivo_original = []
-    pagos = []
-    for fila in archivo:
-        fila = str(fila)[:-5]  # Se quita el prefijo b' y sufijo '/r/n
-        archivo_original.append(fila)
-
-        if fila[23:23+4] != NUMERO_GIRE:
-            # Excluidos
-            continue
-
-        fecha_de_pago = "/".join([fila[6:6+2], fila[4:4+2], fila[0:4]])
-        alumno_id = fila[27:27+5]
-        cuota_id = fila[33:33+6]
-        monto = fila[39:39+4] + "." + fila[43:43+2]
-        pagos.append((cuota_id, alumno_id, fecha_de_pago, monto))
-
-    return (archivo_original, pagos)
 
 
 def obtener_alumno(request):
