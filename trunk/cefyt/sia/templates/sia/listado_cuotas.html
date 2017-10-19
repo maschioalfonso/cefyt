@@ -6,8 +6,6 @@
 <h1>Estado de cuotas</h1>
 <br>
 <table>
-<form action="{% url 'sia:generar_cupon' %}" method="POST">
-{% csrf_token %}
     {% if not lista_cuotas %}
         Aún no tienes ninguna cuota abonada.
     {% endif %}
@@ -37,9 +35,8 @@
         </tr>
     {% endfor %}
 </table>
-
+s
 <input type=button value="Volver" onClick="javascript:history.go(-1);">
 
-</form>
 </div>
 {% endblock %}
