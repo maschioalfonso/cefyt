@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render, redirect
-
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.http import HttpResponse
-
+from django.shortcuts import render, redirect
 from reportlab.graphics.barcode.common import I2of5
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -13,8 +12,9 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.platypus import *
 
-from sia.models import Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota, Noticia
 from sia.forms import RegistroForm, alumno_desde_form, SubirArchivoForm
+from sia.models import Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurso, Cuota, Noticia
+from sia.mail_template import SUBSCRIPTION_MAIL_BODY, SUBSCRIPTION_MAIL_SUBJECT
 
 from sia.reportes import reporte_cursos_inscriptos_alumno_pdf, reporte_morosos_pdf, generar_pdf
 from sia.CEFyT import *
@@ -50,6 +50,9 @@ def cuenta(request):
             # Inscripción y generación de cuotas
             inscribir_alumno(alumno, cursado)
             generar_cuotas(alumno, cursado)
+            enviar_mail(alumno, cursado)
+
+            # Envío de mail
 
         if opciones_descubrimiento:
             opcion = DescubrimientoOpcion.objects.get(
@@ -187,8 +190,17 @@ def generar_cuotas(alumno, cursado):
         es_certificado=True)
 
 
+def enviar_mail(alumno, cursado):
+    send_mail(
+        SUBSCRIPTION_MAIL_SUBJECT.format(curso=cursado.nombre),
+        SUBSCRIPTION_MAIL_BODY.format(curso=cursado.nombre),
+        'from@example.com',
+        [alumno.usuario.username],
+        fail_silently=True)
+
+
 def es_argentino(alumno):
-    return alumno.pais.nombre in ["Argentina", "argentina"]
+    return alumno.pais.nombre.lower() == 'argentina'
 
 
 def generar_cupon(request):

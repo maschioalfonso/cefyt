@@ -16,6 +16,9 @@ class Pais(models.Model):
     def __str__(self):
         return self.nombre
 
+    def __unicode__(self):
+        return self.nombre
+
 
 class Alumno(models.Model):
     usuario = models.OneToOneField(User)
