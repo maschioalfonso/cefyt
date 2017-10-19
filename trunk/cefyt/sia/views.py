@@ -180,7 +180,7 @@ def enviar_mail(alumno, cursado):
     send_mail(
         SUBSCRIPTION_MAIL_SUBJECT.format(curso=cursado.nombre),
         SUBSCRIPTION_MAIL_BODY.format(curso=cursado.nombre),
-        'from@example.com',
+        'noreply.cefyt@gmail.com',
         [alumno.usuario.username],
         fail_silently=True)
 
