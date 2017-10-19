@@ -30,9 +30,6 @@
 
             {% if cuota.pagado == False%}
                 <td>Cuota aún no abonada.</td>
-                {% if alumno_es_argentino %}
-                    <td><input type="radio" name="cuota" value="{{cuota.id}}" checked></td>
-                {% endif %}
             {% else %}
                 <td>Pagada el: {{cuota.fecha_de_pago}}</td>
                 <td>Número de comprobante: {{cuota.comprobante}}</td>
@@ -41,9 +38,7 @@
     {% endfor %}
 </table>
 
-{% if alumno_es_argentino %}
-    <input type="submit" value="Generar comprobante" class="input">
-{% endif %}
+<input type=button value="Volver" onClick="javascript:history.go(-1);">
 
 </form>
 </div>
