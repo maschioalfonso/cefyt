@@ -12,12 +12,17 @@ from sia.models import Alumno, Cursado, DescubrimientoOpcion, DescubrimientoCurs
 from sia.reportes import reporte_cursos_inscriptos_alumno_pdf, reporte_morosos_pdf, generar_pdf
 
 
+def es_argentino(alumno):
+    return alumno.pais.nombre.lower() == 'argentina'
+
+
 @login_required
 def cuenta(request):
     if request.method == "GET" and request.user.is_superuser:
         return redirect("admin:index")
 
     alumno = obtener_alumno(request)
+    alumno_es_argentino = es_argentino(alumno)
     noticias = Noticia.objects.all().order_by('-fecha')
 
     cursados = Cursado.objects.filter(
@@ -55,6 +60,7 @@ def cuenta(request):
         return redirect("sia:cuenta")
 
     context = {'lista_cursados': cursados,
+               'alumno_es_argentino': alumno_es_argentino,
                'lista_cursados_inscripto': cursados_inscripto,
                'opcion_descubrimiento': opciones_descubrimiento,
                'noticias': noticias}
@@ -101,9 +107,10 @@ def registro(request):
 def listado_cuotas(request):
 
     alumno = obtener_alumno(request)
+    alumno_es_argentino = es_argentino(alumno)
     lista_cuotas = Cuota.objects.filter(alumno=alumno)
 
-    context = {'lista_cuotas': lista_cuotas}
+    context = {'lista_cuotas': lista_cuotas, 'alumno_es_argentino': alumno_es_argentino}
 
     return render(request, 'sia/listado_cuotas.html', context)
 
